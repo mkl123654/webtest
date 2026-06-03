@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>鱼乐喵 · 吃喝玩乐推荐</title>
+  <title>胖喵 · 个人主页</title>
   <style>
     /* ===== Reset & Base ===== */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -701,27 +701,27 @@
           <div class="avatar-main">🐱</div>
           <div class="avatar-status"></div>
         </div>
-        <div class="profile-name">鱼乐喵</div>
-        <div class="profile-tagline">心情 → 推荐，3 秒出答案</div>
+        <div class="profile-name">胖喵</div>
+        <div class="profile-tagline">前端开发者 · AI 数字分身</div>
         <span class="profile-hint" id="infoToggle">▴ 收起信息</span>
 
         <div class="profile-info-wrap open" id="profileInfoWrap">
           <div class="profile-info-grid">
             <div class="info-chip">
               <div class="label">身份</div>
-              <div class="value">AI 吃喝玩乐推荐助手</div>
+              <div class="value">前端开发者 · 页面构建</div>
             </div>
             <div class="info-chip">
               <div class="label">状态</div>
-              <div class="value">🟢 在线，随时可聊</div>
+              <div class="value">🟢 在线，AI 驱动中</div>
             </div>
             <div class="info-chip">
-              <div class="label">覆盖范围</div>
-              <div class="value">美食 · 饮品 · 出游 · 娱乐</div>
+              <div class="label">技术方向</div>
+              <div class="value">HTML · CSS · JavaScript</div>
             </div>
             <div class="info-chip">
-              <div class="label">核心技能</div>
-              <div class="value">你说心情，我还你推荐</div>
+              <div class="label">联系方式</div>
+              <div class="value">hello@pangmiao.dev</div>
             </div>
           </div>
         </div>
@@ -897,7 +897,7 @@
       </div>
 
       <footer class="footer">
-        © 2026 鱼乐喵 · 吃喝玩乐，一网打尽
+        © 2026 胖喵 · 前端开发者
       </footer>
     </main>
 
@@ -913,22 +913,22 @@
 
     <div class="chat-popup" id="chatPopup">
       <div class="chat-popup-header">
-        😼 鱼乐喵 · 数字分身
+        🤖 胖喵 · AI 数字分身
         <button class="close-btn" id="chatPopupClose">✕</button>
       </div>
 
       <div class="chat-popup-messages" id="chatMessages">
         <div class="msg bot">
-          <div class="sender">鱼乐喵</div>
-          😼 <b>心情 → 推荐，3 秒出答案。</b><br><br>试试发一句？「想吃火锅」「周末去哪」「好无聊」——随便问！🎉
+          <div class="sender">胖喵</div>
+          吃啥、喝啥、去哪玩？直接问我！👇
         </div>
       </div>
 
       <div class="chat-popup-chips">
-        <button class="quick-chip" data-q="不知道吃什么">🍽️ 吃啥</button>
-        <button class="quick-chip" data-q="想喝点什么，推荐一下">🧋 喝啥</button>
+        <button class="quick-chip" data-q="推荐好吃的">🍽️ 吃啥</button>
+        <button class="quick-chip" data-q="想喝点什么">🧋 喝啥</button>
         <button class="quick-chip" data-q="周末去哪玩">✈️ 去哪玩</button>
-        <button class="quick-chip" data-q="好无聊，推荐点乐子">🎉 找乐子</button>
+        <button class="quick-chip" data-q="好无聊找点乐子">🎉 找乐子</button>
       </div>
 
       <div class="chat-popup-input-row">
@@ -1011,109 +1011,10 @@
     chatToggleBtn.addEventListener('click', openChat);
     chatPopupClose.addEventListener('click', closeChat);
 
-    /* ===== 推荐池 ===== */
-    const dinnerPool = [
-      '试试 🍜 **兰州牛肉面**！汤清味浓，一清二白三红四绿五黄，配一碟牛肉和二细面，吃完浑身舒坦。',
-      '推荐 🍲 **酸菜鱼**！嫩滑鱼片配酸爽汤底，下饭一绝。自己在家做也简单，买包好酸菜鱼料就行。',
-      '不如来份 🍛 **咖喱猪排饭**！酥脆猪排浇上浓稠咖喱，米饭杀手。配一杯冰乌龙，完美。',
-      '吃 🥟 **手工水饺**吧！猪肉白菜或韭菜鸡蛋，蘸醋和辣椒油，简单又满足。',
-      '推荐 🍝 **番茄肉酱意面**！自己熬一锅肉酱，面条煮到 al dente，撒帕玛森芝士，比餐厅还香。',
-      '试试 🥘 **韩式泡菜豆腐汤**！酸辣开胃，热腾腾一锅配白米饭，治愈一整天的疲惫。',
-      '来一份 🍗 **照烧鸡腿饭**！鸡皮煎到焦脆，浇甜咸照烧汁，配西兰花和溏心蛋，完美。',
-      '搞点 🥩 **黑椒牛柳炒意面**！牛肉嫩滑，黑椒味浓郁，15 分钟搞定，比外卖快。'
-    ];
+    /* ===== AI 聊天 ===== */
+    const API_BASE = 'http://localhost:3456';
+    let conversationHistory = []; // { role: 'user' | 'assistant', content }
 
-    const spicyPool = [
-      '辣的来 🔥 **水煮牛肉**！满满花椒辣椒，牛肉嫩到入口即化，底下垫豆芽莴笋，麻辣鲜香全齐了。',
-      '辣党必试 🌶️ **湖南小炒肉**！五花肉煸到焦边，加螺丝椒豆豉爆炒，配三碗米饭不过分。',
-      '安排 🍲 **重庆老火锅**！九宫格牛油锅底，毛肚鸭肠黄喉走一波，越煮越香。',
-      '推荐 🔥 **麻婆豆腐**！嫩豆腐烧出红油，花椒面是灵魂，一勺浇饭上，简单粗暴的好吃。'
-    ];
-
-    const quickPool = [
-      '快手之选 🍳 **蛋炒饭**！隔夜饭是灵魂，大火颠锅粒粒分明，加火腿丁葱花，5 分钟出锅。',
-      '超简单 🍜 **葱油拌面**！小葱熬葱油，酱油白糖一拌，比方便面好吃十倍，成本不到三块。',
-      '懒人必备 🥪 **番茄鸡蛋盖饭**！鸡蛋滑嫩番茄酸甜，盖热米饭上，从做到吃 10 分钟。',
-      '快手推荐 🫕 **紫菜蛋花汤 + 煎饺**！速冻饺子底煎金黄，一碗蛋花汤配着，比煮泡面还快。'
-    ];
-
-    const lateNightPool = [
-      '深夜来份 🍢 **烤串**！羊肉串牛肉串鸡翅鸡胗，撒孜然辣椒，配一瓶冰啤酒，爽。',
-      '夜宵经典 🥣 **皮蛋瘦肉粥**！米粒开花肉丝嫩滑，撒葱花白胡椒，暖胃又不撑。',
-      '饿了？🦪 **蒜蓉烤生蚝**！蒜蓉粉丝铺满，炭火一烤滋滋冒油，夜市第一选择。',
-      '深夜食堂 🍳 **泡面加料版**！煮泡面卧个荷包蛋加片芝士，撒把葱花，瞬间高级三倍。'
-    ];
-
-    const drinkPool = [
-      '想喝点特别的？🧋 **手打柠檬茶**！香水柠檬暴打出汁，加冰加茶底，酸爽解腻，配什么吃的都搭。',
-      '推荐 ☕ **冰博客拿铁**！浓缩咖啡浇在冰牛奶上，奶甜咖啡苦分层入口，比普通拿铁醇厚三倍。',
-      '试试 🍺 **精酿 IPA**！柑橘松针香气，苦中带甘，配烤肉或炸鸡绝了。入门推荐浑浊 IPA，苦度低果香浓。',
-      '来杯 🍹 **莫吉托**！朗姆酒+青柠+薄荷+苏打，清爽微醺，夏天标配。自己在家做也简单。',
-      '天冷了？🍵 **围炉煮茶**！炭火小炉烤橘子红薯，煮一壶老白茶或普洱，和朋友聊一下午。',
-      '推荐 🥤 **杨枝甘露**！芒果打底，西柚粒西米椰浆层层叠加，甜品和饮品二合一。'
-    ];
-
-    const funPool = [
-      '周末推荐 🏕️ **城市周边露营**！找个小河边或山脚下，搭帐篷烤肉看星星，逃离手机 24 小时。',
-      '和朋友一起去 🎬 **沉浸式剧场**！不是坐着看戏，是跟着演员在场景里走，你就是故事的一部分。',
-      '试试 🎱 **潮玩综合体**！桌游+保龄球+飞镖+电玩一站搞定，适合一群人闹一下午。',
-      '推荐 🎨 **DIY 手作坊**！陶艺、银饰、画画、烘焙，选一个感兴趣的自己动手做，成品还能带回家。',
-      '去 🚴 **城市骑行**！租辆单车沿河边或老街骑，看到好吃的就停下来，比健身房有意思多了。',
-      '小众推荐 🧩 **密室逃脱**！拉上三五个朋友关在小黑屋里解谜，智商和友情的双重考验。'
-    ];
-
-    const boredPool = [
-      '无聊的话 🎮 **试试一款新游戏**！《塞尔达传说》《星露谷物语》《双人成行》（拉上朋友），或者手机上的《崩坏：星穹铁道》，总有一款让你上头。',
-      '推荐 📺 **刷一部高分剧**：《繁花》看上海话和90年代、《重启人生》看日式温柔重生、《黑暗荣耀》看爽文式复仇。挑一个今晚就开始。',
-      '来点 🎵 **换换歌单口味**！City Pop（山下达郎、竹内玛莉亚）适合开车兜风；Lofi Hip Hop 适合工作背景；后摇（惘闻、MONO）适合深夜放空。',
-      '试试 📚 **一本轻松好书**：马伯庸《长安的荔枝》短小精彩、李娟《我的阿勒泰》治愈放松、或者村上春树《挪威的森林》重读一遍。'
-    ];
-
-    const travelPool = [
-      '周末推荐 🏕️ **城市周边露营**！找个小河边或山脚下，搭帐篷烤肉看星星，逃离手机 24 小时。适合自驾，带上帐篷睡袋就行。',
-      '一日游推荐 ⛰️ **郊区徒步**！轻装上阵，选条 5-8 公里的入门路线，山野间深呼吸，下山吃顿农家菜，完美。',
-      '文艺之旅 📸 **创意园区探店**！老厂房改造的艺术区，逛展拍照喝咖啡，一个下午刚刚好。记得穿好看点！',
-      '小长假推荐 🏘️ **古镇两日游**！选个不那么商业化的古镇，住一晚民宿，清晨在石板路上走走，吃遍老字号。'
-    ];
-
-    function randomPick(pool) {
-      return pool[Math.floor(Math.random() * pool.length)];
-    }
-
-    /* ===== 知识库 ===== */
-    const knowledge = [
-      { keys: ['不知道吃什么', '今天吃什么', '吃什么', '晚餐', '晚饭', '中午', '午饭', '早餐', '早饭', '晚上吃', '中午吃'], reply: () => randomPick(dinnerPool) },
-      { keys: ['辣', '麻辣', '川菜', '湘菜', '重口味', '过瘾'], reply: () => randomPick(spicyPool) },
-      { keys: ['简单', '快手', '方便', '懒', '快速', '省事', '随便'], reply: () => randomPick(quickPool) },
-      { keys: ['深夜', '夜宵', '宵夜', '半夜', '馋了'], reply: () => randomPick(lateNightPool) },
-      { keys: ['面', '面条', '米线', '粉', '拌面', '汤面'], reply: '面食党看这里 🍜：① 兰州牛肉面，汤清面筋道；② 重庆小面，麻辣鲜香一碗入魂；③ 武汉热干面，芝麻酱拌开配酸豆角；④ 柳州螺蛳粉，酸笋越臭越过瘾；⑤ 日式豚骨拉面，浓白汤底配溏心蛋。想吃哪种？' },
-      { keys: ['米饭', '盖饭', '炒饭', '拌饭', '下饭'], reply: '米饭星人 🍚：① 台式卤肉饭，五花肉丁卤到入口即化；② 韩式石锅拌饭，锅巴脆蔬菜多；③ 日式牛丼，肥牛洋葱甜咸下饭；④ 海南鸡饭，嫩鸡蘸姜葱油碟，鸡油饭是本体。' },
-      { keys: ['火锅', '涮', '锅底'], reply: '火锅江湖 🍲：川渝牛油麻辣锅、潮汕牛肉清汤锅、北京铜锅涮羊肉、贵州酸汤鱼火锅、海南椰子鸡火锅。冬天重庆老火锅，夏天潮汕牛肉锅，换着来不腻。' },
-      { keys: ['甜', '甜品', '糖水', '蛋糕', '冰淇淋', '巧克力'], reply: '甜品时间 🍰：① 广式双皮奶，奶香浓滑冰着吃；② 杨枝甘露，芒果西柚西米神仙组合；③ 提拉米苏，咖啡马斯卡彭一勺入魂；④ 日式抹茶千层，微苦回甘。甜品是另一个胃！' },
-      { keys: ['凉', '夏天', '清爽', '沙拉', '凉拌', '解暑'], reply: '天热来点清爽 🥗：① 东北大拉皮，麻酱拌开酸爽滑溜；② 傣味柠檬鸡，酸辣清香入魂；③ 日式冷荞麦面，蘸汁冰凉；④ 越南春卷，虾仁香草蘸鱼露绝了。' },
-      { keys: ['汤', '暖', '冬天', '滋补', '煲汤', '炖'], reply: '喝汤暖身 🥣：① 广式老火靓汤，玉米胡萝卜排骨清甜滋润；② 江西瓦罐汤，小盅慢煨；③ 韩式参鸡汤，整鸡塞糯米人参；④ 日式味噌汤，简单快手。' },
-      { keys: ['喝什么', '喝啥', '饮品', '饮料', '奶茶', '咖啡', '酒', '茶', '推荐喝的', '想喝'], reply: () => randomPick(drinkPool) },
-      { keys: ['去哪玩', '周末', '玩什么', '出去', '活动', '聚会', '约会', '推荐玩的', '有什么玩的', '出游', '出行'], reply: () => randomPick(funPool) },
-      { keys: ['旅游', '旅行', '去哪旅游', '周边', '徒步', '爬山', '一日游', '打卡', '拍照', '古镇'], reply: () => randomPick(travelPool) },
-      { keys: ['无聊', '找乐子', '推荐', '电影', '剧', '综艺', '游戏', '音乐', '书', '看什么', '听什么', '玩什么游戏'], reply: () => randomPick(boredPool) },
-      { keys: ['你是什么', '身份', '谁', '介绍'], reply: '我是鱼乐喵 😼！一个吃喝玩乐全能的 AI 助手。不知道吃啥、喝啥、去哪玩？告诉我心情或偏好，我还你一个靠谱推荐！' },
-      { keys: ['你好', '嗨', 'hi', 'hello', '在吗'], reply: '嗨！我是鱼乐喵 😼～吃喝玩乐尽管问！吃啥、喝啥、去哪玩……告诉我想法，我来安排！🎉' }
-    ];
-
-    const fallback = '这个问题我还得再修炼一下 😅。你可以试试问我：吃啥、喝啥、去哪玩、周末怎么过、旅游推荐……吃喝玩乐尽管问！';
-
-    function matchReply(input) {
-      const text = input.toLowerCase();
-      for (const item of knowledge) {
-        if (item.keys.some(k => text.includes(k))) {
-          const reply = item.reply;
-          return typeof reply === 'function' ? reply() : reply;
-        }
-      }
-      return fallback;
-    }
-
-    /* ===== 聊天交互 ===== */
     const messagesEl = document.getElementById('chatMessages');
     const sendBtn = document.getElementById('sendBtn');
 
@@ -1121,29 +1022,95 @@
       const div = document.createElement('div');
       div.className = 'msg ' + type;
       if (type === 'bot') {
-        div.innerHTML = '<div class="sender">鱼乐喵</div>' + text;
+        div.innerHTML = '<div class="sender">胖喵</div>' + text;
+        div.id = 'msg-' + Date.now();
       } else {
         div.innerHTML = '<div class="sender">你</div>' + text;
       }
       messagesEl.appendChild(div);
       messagesEl.scrollTop = messagesEl.scrollHeight;
+      return div;
     }
 
-    function handleSend(text) {
+    function addTyping() {
+      const div = document.createElement('div');
+      div.className = 'msg bot';
+      div.id = 'msg-typing';
+      div.innerHTML = '<div class="sender">胖喵</div><em>正在输入…</em>';
+      messagesEl.appendChild(div);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      return div;
+    }
+
+    function removeTyping() {
+      const el = document.getElementById('msg-typing');
+      if (el) el.remove();
+    }
+
+    async function handleSend(text) {
       const q = text.trim();
-      if (!q || q.length > 200) return;
+      if (!q || q.length > 500) return;
       addMessage(q, 'user');
       chatInput.value = '';
-      setTimeout(() => {
-        addMessage(matchReply(q), 'bot');
-      }, 400 + Math.random() * 400);
+      conversationHistory.push({ role: 'user', content: q });
+
+      const typingEl = addTyping();
+
+      try {
+        const resp = await fetch(API_BASE + '/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: q, history: conversationHistory }),
+        });
+
+        if (!resp.ok) throw new Error('API error');
+
+        removeTyping();
+        const botDiv = addMessage('', 'bot');
+        let fullText = '';
+
+        const reader = resp.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue;
+            try {
+              const data = JSON.parse(line.slice(6));
+              if (data.type === 'text') {
+                fullText += data.text;
+                botDiv.innerHTML = '<div class="sender">胖喵</div>' + fullText;
+                messagesEl.scrollTop = messagesEl.scrollHeight;
+              } else if (data.type === 'error') {
+                botDiv.innerHTML = '<div class="sender">胖喵</div>' + data.error;
+              }
+            } catch {}
+          }
+        }
+
+        if (!fullText) {
+          botDiv.innerHTML = '<div class="sender">胖喵</div>抱歉，出了点问题，稍后再试～';
+        }
+        conversationHistory.push({ role: 'assistant', content: fullText || '...' });
+        // 保留最近 20 轮对话
+        if (conversationHistory.length > 40) conversationHistory = conversationHistory.slice(-40);
+
+      } catch (err) {
+        removeTyping();
+        addMessage('抱歉，暂时连不上 AI 服务 😅<br>请确认已启动后端：<code>npm start</code>', 'bot');
+      }
     }
 
     sendBtn.addEventListener('click', () => handleSend(chatInput.value));
     chatInput.addEventListener('keydown', e => {
       if (e.key === 'Enter') handleSend(chatInput.value);
     });
-
     /* ===== 快捷提问 ===== */
     document.querySelectorAll('.quick-chip').forEach(chip => {
       chip.addEventListener('click', () => {

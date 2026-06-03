@@ -1,0 +1,9 @@
+{
+  "name": "pangmiao-homepage",
+  "version": "1.0.0",
+  "description": "胖喵个人主页 + AI数字分身 (DeepSeek)",
+  "scripts": {
+    "start": "node --env-file=.env server.js"
+  },
+  "dependencies": {}
+}
