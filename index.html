@@ -39,7 +39,7 @@
 
     /* ===== Left Panel ===== */
     .left-panel {
-      width: 380px;
+      width: 300px;
       flex-shrink: 0;
       background: linear-gradient(180deg, #fff8ee 0%, #fff1e0 40%, #feead2 100%);
       border-right: 1px solid #f0d4b8;
@@ -48,12 +48,12 @@
       position: sticky;
       top: 0;
       height: 100vh;
-      overflow: hidden;
+      overflow-y: auto;
     }
 
     /* --- Profile Section --- */
     .profile-section {
-      padding: 32px 28px 20px;
+      padding: 32px 24px 20px;
       text-align: center;
       flex-shrink: 0;
     }
@@ -61,18 +61,18 @@
     .avatar-wrap {
       position: relative;
       display: inline-block;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .avatar-main {
-      width: 96px;
-      height: 96px;
+      width: 88px;
+      height: 88px;
       border-radius: 50%;
       background: linear-gradient(135deg, #e05820, #e07830, #f09850, #f4b840);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 48px;
+      font-size: 44px;
       border: 3px solid #fff;
       box-shadow: 0 4px 20px rgba(200,100,30,.25);
     }
@@ -81,19 +81,19 @@
       position: absolute;
       bottom: 4px;
       right: 4px;
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
       background: #4ade80;
       border-radius: 50%;
       border: 3px solid #fff;
     }
 
     .profile-name {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 700;
       color: var(--deep);
       letter-spacing: 2px;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
 
     .profile-tagline {
@@ -124,7 +124,7 @@
 
     .profile-info-wrap.open {
       max-height: 260px;
-      margin-top: 14px;
+      margin-top: 12px;
     }
 
     .profile-info-grid {
@@ -154,219 +154,146 @@
       color: var(--deep);
     }
 
-    /* --- Divider --- */
-    .panel-divider {
+    /* --- Nav Tabs --- */
+    .nav-tabs {
+      padding: 0 20px 24px;
       display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 0 28px;
+      flex-direction: column;
+      gap: 4px;
       flex-shrink: 0;
     }
 
-    .panel-divider::before,
-    .panel-divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: #f0d4b8;
+    .nav-tabs-label {
+      font-size: 11px;
+      color: var(--gray);
+      letter-spacing: 2px;
+      margin-bottom: 4px;
+      padding-left: 8px;
     }
 
-    .panel-divider .divider-label {
+    .nav-tab {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--deep);
+      cursor: pointer;
+      transition: all .18s;
+      border: 1px solid transparent;
+      background: transparent;
+      text-align: left;
+      width: 100%;
+    }
+
+    .nav-tab:hover {
+      background: #fff8f0;
+      color: var(--warm);
+    }
+
+    .nav-tab.active {
+      background: linear-gradient(135deg, #fff4e8, #ffe8d4);
+      color: var(--warm);
+      font-weight: 600;
+      border-color: #f0d4b8;
+      box-shadow: 0 2px 8px rgba(200,100,30,.08);
+    }
+
+    .nav-tab .tab-icon {
+      font-size: 22px;
+      width: 28px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .nav-tab .tab-arrow {
+      margin-left: auto;
       font-size: 12px;
       color: var(--gray);
-      white-space: nowrap;
-      letter-spacing: 1px;
+      transition: transform .2s;
     }
 
-    /* --- Digital Twin (Chat) Section --- */
-    .chat-section {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      padding: 16px 20px 20px;
-      min-height: 0;
-    }
-
-    .chat-section-header {
-      font-size: 14px;
-      font-weight: 600;
+    .nav-tab.active .tab-arrow {
       color: var(--warm);
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
+      transform: translateX(3px);
     }
-
-    .chat-section-header .ai-badge {
-      font-size: 10px;
-      padding: 2px 8px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, var(--accent), var(--warm));
-      color: #fff;
-      font-weight: 500;
-    }
-
-    .chat-messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 12px;
-      background: #fff;
-      border-radius: var(--radius-sm);
-      border: 1px solid #f0d4b8;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      min-height: 0;
-    }
-
-    .chat-messages::-webkit-scrollbar { width: 4px; }
-    .chat-messages::-webkit-scrollbar-thumb { background: #f0d4b8; border-radius: 2px; }
-
-    .msg {
-      max-width: 92%;
-      padding: 8px 12px;
-      border-radius: 12px;
-      font-size: 12.5px;
-      line-height: 1.5;
-      animation: fadeIn .25s ease;
-    }
-
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-
-    .msg.user {
-      align-self: flex-end;
-      background: linear-gradient(135deg, var(--accent), var(--warm));
-      color: #fff;
-      border-bottom-right-radius: 4px;
-    }
-
-    .msg.bot {
-      align-self: flex-start;
-      background: #fffaf4;
-      border: 1px solid #f0d8c0;
-      border-bottom-left-radius: 4px;
-    }
-
-    .msg .sender {
-      font-size: 10px;
-      color: var(--gray);
-      margin-bottom: 2px;
-    }
-
-    .msg.bot .sender { color: var(--warm); }
-
-    .quick-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      padding: 10px 0 0;
-      flex-shrink: 0;
-    }
-
-    .quick-chip {
-      font-size: 11px;
-      padding: 5px 12px;
-      border-radius: 16px;
-      border: 1px solid #f0d4b8;
-      background: #fff;
-      color: var(--warm);
-      cursor: pointer;
-      transition: all .15s;
-      white-space: nowrap;
-    }
-
-    .quick-chip:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
-
-    .chat-input-row {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
-      flex-shrink: 0;
-    }
-
-    .chat-input-row input {
-      flex: 1;
-      border: 1px solid #f0d4b8;
-      border-radius: 20px;
-      padding: 9px 16px;
-      font-size: 13px;
-      outline: none;
-      transition: border-color .15s;
-      background: #fff;
-      min-width: 0;
-    }
-
-    .chat-input-row input:focus { border-color: var(--accent); }
-
-    .chat-input-row button {
-      background: linear-gradient(135deg, var(--accent), var(--warm));
-      color: #fff;
-      border: none;
-      border-radius: 20px;
-      padding: 9px 18px;
-      font-size: 13px;
-      cursor: pointer;
-      transition: opacity .15s;
-      white-space: nowrap;
-      flex-shrink: 0;
-      font-weight: 500;
-    }
-
-    .chat-input-row button:hover { opacity: .9; }
 
     /* ===== Right Panel ===== */
     .right-panel {
       flex: 1;
       min-width: 0;
       overflow-y: auto;
+      padding: 0 0 40px;
     }
 
-    /* --- Search & Nav Bar --- */
-    .search-nav {
-      padding: 28px 40px 0;
-      position: sticky;
-      top: 0;
-      background: var(--bg);
-      z-index: 10;
-      padding-bottom: 8px;
+    /* --- Tab Content Panels --- */
+    .tab-panel {
+      display: none;
+      padding: 32px 40px 0;
     }
 
-    .search-box {
+    .tab-panel.active {
+      display: block;
+    }
+
+    .tab-panel-header {
+      margin-bottom: 28px;
+    }
+
+    .tab-panel-header h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--deep);
+      margin-bottom: 6px;
+    }
+
+    .tab-panel-header p {
+      font-size: 14px;
+      color: var(--gray);
+    }
+
+    /* --- Search bar inside tab --- */
+    .tab-search {
       display: flex;
-      gap: 10px;
+      gap: 8px;
+      margin-top: 16px;
       background: #fff;
       border: 1px solid #f0d4b8;
-      border-radius: 28px;
-      padding: 6px 6px 6px 20px;
+      border-radius: 24px;
+      padding: 5px 5px 5px 16px;
       box-shadow: 0 2px 12px rgba(180,100,40,.06);
       transition: box-shadow .2s, border-color .2s;
+      max-width: 630px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
-    .search-box:focus-within {
+    .tab-search:focus-within {
       border-color: var(--accent);
       box-shadow: 0 4px 20px rgba(200,100,30,.12);
     }
 
-    .search-box input {
+    .tab-search input {
       flex: 1;
       border: none;
       outline: none;
-      font-size: 15px;
+      font-size: 13px;
       background: transparent;
       color: var(--deep);
       min-width: 0;
     }
 
-    .search-box input::placeholder { color: #c4b09a; }
+    .tab-search input::placeholder { color: #c4b09a; }
 
-    .search-box button {
+    .tab-search button {
       background: linear-gradient(135deg, var(--accent), var(--warm));
       color: #fff;
       border: none;
-      border-radius: 22px;
-      padding: 10px 24px;
-      font-size: 14px;
+      border-radius: 20px;
+      padding: 7px 16px;
+      font-size: 12px;
       cursor: pointer;
       transition: opacity .15s;
       white-space: nowrap;
@@ -374,112 +301,37 @@
       font-weight: 500;
     }
 
-    .search-box button:hover { opacity: .9; }
+    .tab-search button:hover { opacity: .9; }
 
-    .nav-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 12px;
-    }
-
-    .nav-chip {
-      font-size: 13px;
-      padding: 6px 16px;
-      border-radius: 18px;
-      border: 1px solid #f0d4b8;
-      background: #fff;
-      color: var(--deep);
-      cursor: pointer;
-      transition: all .15s;
-      white-space: nowrap;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .nav-chip:hover, .nav-chip.active {
-      background: var(--warm);
-      color: #fff;
-      border-color: var(--warm);
-    }
-
-    /* --- Content Area --- */
-    .content-area {
-      padding: 24px 40px 60px;
-    }
-
-    /* --- Welcome Banner --- */
-    .welcome-banner {
-      background: linear-gradient(135deg, #fff6e8, #ffeee0);
-      border: 1px solid #f0d4b8;
-      border-radius: var(--radius);
-      padding: 24px 28px;
+    /* --- Section inside tab --- */
+    .gallery-section {
       margin-bottom: 32px;
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .welcome-emoji {
-      font-size: 48px;
-      flex-shrink: 0;
-    }
-
-    .welcome-text h2 {
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--deep);
-      margin-bottom: 4px;
-    }
-
-    .welcome-text p {
-      font-size: 14px;
-      color: var(--gray);
-    }
-
-    /* --- Section Headers --- */
-    .section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 18px;
     }
 
     .section-title {
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--deep);
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--warm);
+      margin-bottom: 14px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     .section-title::before {
       content: '';
       display: inline-block;
       width: 4px;
-      height: 22px;
+      height: 18px;
       background: linear-gradient(180deg, var(--accent), var(--gold));
       border-radius: 2px;
     }
-
-    .section-more {
-      font-size: 13px;
-      color: var(--warm);
-      cursor: pointer;
-      text-decoration: none;
-      transition: opacity .15s;
-    }
-
-    .section-more:hover { opacity: .7; }
 
     /* --- Gallery --- */
     .gallery {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 16px;
-      margin-bottom: 36px;
     }
 
     .gallery-card {
@@ -502,7 +354,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 52px;
+      font-size: 48px;
       position: relative;
       overflow: hidden;
     }
@@ -548,30 +400,226 @@
       font-size: 13px;
       color: var(--gray);
       border-top: 1px solid #f0d6bc;
+      margin-top: 8px;
     }
 
-    /* ===== Empty State ===== */
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
+    /* ===== Floating Chat (右下角小窗) ===== */
+    .chat-float {
+      position: fixed;
+      bottom: 28px;
+      left: 28px;
+      z-index: 100;
+    }
+
+    .chat-toggle-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--warm));
+      color: #fff;
+      border: none;
+      border-radius: 28px;
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(200,100,30,.35);
+      transition: transform .2s, box-shadow .2s;
+      white-space: nowrap;
+    }
+
+    .chat-toggle-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 28px rgba(200,100,30,.45);
+    }
+
+    .chat-toggle-btn .toggle-emoji {
+      font-size: 22px;
+    }
+
+    .chat-toggle-btn .toggle-label {
+      font-size: 13px;
+    }
+
+    .chat-toggle-btn .dot {
+      width: 10px;
+      height: 10px;
+      background: #4ade80;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      flex-shrink: 0;
+    }
+
+    /* Chat popup */
+    .chat-popup {
+      position: absolute;
+      bottom: 70px;
+      left: 0;
+      width: 360px;
+      max-height: 480px;
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 40px rgba(60,20,0,.2);
+      border: 1px solid #f0d4b8;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transform: translateY(16px) scale(.95);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform .25s ease, opacity .25s ease;
+    }
+
+    .chat-popup.open {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .chat-popup-header {
+      background: linear-gradient(135deg, var(--warm), var(--accent));
+      color: #fff;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 600;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .chat-popup-header .close-btn {
+      background: rgba(255,255,255,.2);
+      border: none;
+      color: #fff;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .15s;
+    }
+
+    .chat-popup-header .close-btn:hover { background: rgba(255,255,255,.35); }
+
+    .chat-popup-messages {
+      flex: 1;
+      height: 260px;
+      overflow-y: auto;
+      padding: 12px;
+      background: #fffbf6;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .chat-popup-messages::-webkit-scrollbar { width: 4px; }
+    .chat-popup-messages::-webkit-scrollbar-thumb { background: #f0d4b8; border-radius: 2px; }
+
+    .msg {
+      max-width: 90%;
+      padding: 8px 12px;
+      border-radius: 12px;
+      font-size: 12.5px;
+      line-height: 1.5;
+      animation: fadeIn .25s ease;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    .msg.user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, var(--accent), var(--warm));
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+
+    .msg.bot {
+      align-self: flex-start;
+      background: #fffaf4;
+      border: 1px solid #f0d8c0;
+      border-bottom-left-radius: 4px;
+    }
+
+    .msg .sender {
+      font-size: 10px;
       color: var(--gray);
+      margin-bottom: 2px;
     }
 
-    .empty-state .empty-emoji {
-      font-size: 64px;
-      margin-bottom: 16px;
+    .msg.bot .sender { color: var(--warm); }
+
+    .chat-popup-chips {
+      padding: 8px 12px;
+      background: #fff;
+      border-top: 1px solid #f8ecdd;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      flex-shrink: 0;
     }
 
-    .empty-state p {
-      font-size: 15px;
+    .quick-chip {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 14px;
+      border: 1px solid #f0d4b8;
+      background: #fef9f2;
+      color: var(--warm);
+      cursor: pointer;
+      transition: all .15s;
+      white-space: nowrap;
     }
+
+    .quick-chip:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    .chat-popup-input-row {
+      display: flex;
+      gap: 6px;
+      padding: 8px 12px;
+      background: #fff;
+      border-top: 1px solid #f8ecdd;
+      flex-shrink: 0;
+    }
+
+    .chat-popup-input-row input {
+      flex: 1;
+      border: 1px solid #f0d4b8;
+      border-radius: 16px;
+      padding: 7px 12px;
+      font-size: 12.5px;
+      outline: none;
+      transition: border-color .15s;
+      background: #fefaf5;
+      min-width: 0;
+    }
+
+    .chat-popup-input-row input:focus { border-color: var(--accent); }
+
+    .chat-popup-input-row button {
+      background: linear-gradient(135deg, var(--accent), var(--warm));
+      color: #fff;
+      border: none;
+      border-radius: 16px;
+      padding: 7px 14px;
+      font-size: 12.5px;
+      cursor: pointer;
+      transition: opacity .15s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .chat-popup-input-row button:hover { opacity: .9; }
 
     /* ===== Mobile Toggles ===== */
     .mobile-menu-btn {
       display: none;
       position: fixed;
       bottom: 24px;
-      left: 24px;
+      right: 24px;
       width: 48px;
       height: 48px;
       border-radius: 50%;
@@ -595,26 +643,17 @@
 
     /* ===== Responsive ===== */
     @media (max-width: 1024px) {
-      .left-panel {
-        width: 340px;
-      }
-      .search-nav {
-        padding: 20px 24px 0;
-      }
-      .content-area {
-        padding: 20px 24px 40px;
-      }
-      .gallery {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-      }
+      .left-panel { width: 260px; }
+      .tab-panel { padding: 24px 24px 0; }
+      .gallery { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .chat-popup { width: 320px; max-height: 420px; }
     }
 
     @media (max-width: 768px) {
       .left-panel {
         position: fixed;
         top: 0; left: 0;
-        width: 320px;
+        width: 280px;
         height: 100vh;
         z-index: 99;
         transform: translateX(-100%);
@@ -623,42 +662,29 @@
         box-shadow: 4px 0 30px rgba(0,0,0,.15);
       }
 
-      .left-panel.open {
-        transform: translateX(0);
-      }
-
+      .left-panel.open { transform: translateX(0); }
       .left-panel-overlay.show { display: block; }
-
       .mobile-menu-btn { display: flex; }
 
-      .search-nav {
-        padding: 16px 16px 0;
-      }
+      .tab-panel { padding: 20px 16px 0; }
+      .gallery { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .gallery-card .img { font-size: 36px; }
 
-      .content-area {
-        padding: 16px 16px 40px;
+      .chat-float { bottom: 16px; left: 16px; }
+      .chat-toggle-btn { padding: 10px 16px; font-size: 13px; }
+      .chat-toggle-btn .toggle-label { display: none; }
+      .chat-popup {
+        left: 0; right: 8px;
+        width: auto;
+        max-height: 55vh;
       }
-
-      .gallery {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-      }
-
-      .gallery-card .img { font-size: 40px; }
-      .welcome-banner { flex-direction: column; text-align: center; }
-      .profile-section { padding: 24px 20px 16px; }
     }
 
     @media (max-width: 480px) {
-      .gallery {
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-      }
+      .gallery { grid-template-columns: 1fr 1fr; gap: 8px; }
       .gallery-card .img { font-size: 32px; aspect-ratio: 1/1; }
       .gallery-card .caption { padding: 8px 10px; font-size: 12px; }
       .gallery-card .caption small { font-size: 10px; }
-      .nav-chips { gap: 6px; }
-      .nav-chip { font-size: 12px; padding: 5px 12px; }
     }
   </style>
 </head>
@@ -666,7 +692,7 @@
 
   <div class="app">
 
-    <!-- ==================== 左栏：个人头像 + 信息 + 数字分身 ==================== -->
+    <!-- ==================== 左栏：头像信息 + 导航Tab ==================== -->
     <aside class="left-panel" id="leftPanel">
 
       <!-- 个人信息 -->
@@ -676,7 +702,7 @@
           <div class="avatar-status"></div>
         </div>
         <div class="profile-name">鱼乐喵</div>
-        <div class="profile-tagline">吃喝玩乐全能助手 · 你说心情，我给推荐</div>
+        <div class="profile-tagline">心情 → 推荐，3 秒出答案</div>
         <span class="profile-hint" id="infoToggle">▴ 收起信息</span>
 
         <div class="profile-info-wrap open" id="profileInfoWrap">
@@ -701,146 +727,215 @@
         </div>
       </div>
 
-      <!-- 分隔线 -->
-      <div class="panel-divider">
-        <span class="divider-label">🤖 数字分身</span>
-      </div>
-
-      <!-- 数字分身：嵌入式聊天 -->
-      <div class="chat-section">
-        <div class="chat-section-header">
-          💬 和鱼乐喵聊聊
-          <span class="ai-badge">AI</span>
-        </div>
-
-        <div class="chat-messages" id="chatMessages">
-          <div class="msg bot">
-            <div class="sender">鱼乐喵</div>
-            嗨！我是你的数字分身 🐱<br>吃喝玩乐尽管问！吃啥、喝啥、去哪玩、看什么？告诉我你的心情或偏好，我帮你挑！🎉
-          </div>
-        </div>
-
-        <div class="quick-chips">
-          <button class="quick-chip" data-q="不知道吃什么">🍽️ 吃啥</button>
-          <button class="quick-chip" data-q="想喝点什么，推荐一下">🧋 喝啥</button>
-          <button class="quick-chip" data-q="周末去哪玩">🎯 去哪玩</button>
-          <button class="quick-chip" data-q="好无聊，推荐点乐子">🎉 找乐子</button>
-        </div>
-
-        <div class="chat-input-row">
-          <input type="text" id="chatInput" placeholder="输入你的心情或偏好…" maxlength="200">
-          <button id="sendBtn">发送</button>
-        </div>
-      </div>
+      <!-- 导航Tab -->
+      <nav class="nav-tabs">
+        <div class="nav-tabs-label">📂 推荐分类</div>
+        <button class="nav-tab active" data-tab="food">
+          <span class="tab-icon">🍽️</span> 美食推荐
+          <span class="tab-arrow">→</span>
+        </button>
+        <button class="nav-tab" data-tab="travel">
+          <span class="tab-icon">✈️</span> 旅游推荐
+          <span class="tab-arrow">→</span>
+        </button>
+        <button class="nav-tab" data-tab="fun">
+          <span class="tab-icon">🎮</span> 游玩推荐
+          <span class="tab-arrow">→</span>
+        </button>
+      </nav>
     </aside>
 
-    <!-- 移动端遮罩 -->
+    <!-- 移动端遮罩 + 菜单按钮 -->
     <div class="left-panel-overlay" id="leftPanelOverlay"></div>
-
-    <!-- 移动端菜单按钮 -->
     <button class="mobile-menu-btn" id="mobileMenuBtn" title="菜单">🐱</button>
 
-    <!-- ==================== 右栏：搜索导航 + 推荐展示 ==================== -->
+    <!-- ==================== 右栏：Tab切换内容 ==================== -->
     <main class="right-panel">
 
-      <!-- 搜索 & 导航 -->
-      <div class="search-nav">
-        <div class="search-box">
-          <input type="text" id="searchInput" placeholder="🔍  搜索美食、饮品、玩乐…" maxlength="200">
-          <button id="searchBtn">搜索</button>
-        </div>
-        <div class="nav-chips" id="navChips">
-          <span class="nav-chip active" data-filter="all">🏠 全部</span>
-          <span class="nav-chip" data-filter="food">🍽️ 美食</span>
-          <span class="nav-chip" data-filter="drink">🧋 饮品</span>
-          <span class="nav-chip" data-filter="fun">🎮 玩乐</span>
-        </div>
-      </div>
-
-      <!-- 内容区域 -->
-      <div class="content-area">
-
-        <!-- 欢迎横幅 -->
-        <div class="welcome-banner">
-          <div class="welcome-emoji">🌟</div>
-          <div class="welcome-text">
-            <h2>今天想做什么？</h2>
-            <p>搜一搜、逛一逛，找到你的下一站吃喝玩乐目的地</p>
+      <!-- 美食推荐 -->
+      <div class="tab-panel active" id="tab-food">
+        <div class="tab-panel-header">
+          <h2>🍽️ 美食推荐</h2>
+          <p>从街头小吃到精致料理，找到你的下一顿</p>
+          <div class="tab-search">
+            <input type="text" class="tab-search-input" placeholder="搜美食、饮品…" maxlength="200">
+            <button class="tab-search-btn">搜索</button>
           </div>
         </div>
 
-        <!-- 美食图鉴 -->
-        <section class="gallery-section" data-category="food">
-          <div class="section-header">
-            <h2 class="section-title">🍽️ 美食图鉴</h2>
-            <span class="section-more">查看更多 →</span>
-          </div>
+        <div class="gallery-section">
+          <h3 class="section-title">招牌美食</h3>
           <div class="gallery">
-            <div class="gallery-card" data-keywords="面 牛肉面 兰州 拉面">
+            <div class="gallery-card">
               <div class="img"><span class="badge">必吃</span>🍜</div>
               <div class="caption">兰州牛肉面<small>一清二白三红四绿五黄</small></div>
             </div>
-            <div class="gallery-card" data-keywords="海鲜 生腌 潮汕">
+            <div class="gallery-card">
               <div class="img"><span class="badge">特色</span>🦀</div>
               <div class="caption">潮汕生腌<small>潮汕毒药，鲜入骨髓</small></div>
             </div>
-            <div class="gallery-card" data-keywords="披萨 意大利 西餐">
+            <div class="gallery-card">
               <div class="img"><span class="badge">经典</span>🍕</div>
               <div class="caption">那不勒斯披萨<small>窑炉现烤，焦边豹纹</small></div>
             </div>
           </div>
-        </section>
+        </div>
 
-        <!-- 饮品推荐 -->
-        <section class="gallery-section" data-category="drink">
-          <div class="section-header">
-            <h2 class="section-title">🧋 饮品推荐</h2>
-            <span class="section-more">查看更多 →</span>
-          </div>
+        <div class="gallery-section">
+          <h3 class="section-title">人气饮品</h3>
           <div class="gallery">
-            <div class="gallery-card" data-keywords="柠檬茶 手打 茶">
+            <div class="gallery-card">
               <div class="img"><span class="badge">爆款</span>🧋</div>
               <div class="caption">手打柠檬茶<small>暴打香水柠檬，一口入夏</small></div>
             </div>
-            <div class="gallery-card" data-keywords="咖啡 手冲 精品">
+            <div class="gallery-card">
               <div class="img"><span class="badge">精品</span>☕</div>
               <div class="caption">精品手冲咖啡<small>埃塞俄比亚耶加雪菲，花香四溢</small></div>
             </div>
-            <div class="gallery-card" data-keywords="啤酒 精酿 IPA">
+            <div class="gallery-card">
               <div class="img"><span class="badge">小众</span>🍺</div>
               <div class="caption">精酿啤酒<small>IPA、Stout、酸啤，总有对味</small></div>
             </div>
           </div>
-        </section>
+        </div>
+      </div>
 
-        <!-- 玩乐去处 -->
-        <section class="gallery-section" data-category="fun">
-          <div class="section-header">
-            <h2 class="section-title">🎮 玩乐去处</h2>
-            <span class="section-more">查看更多 →</span>
+      <!-- 旅游推荐 -->
+      <div class="tab-panel" id="tab-travel">
+        <div class="tab-panel-header">
+          <h2>✈️ 旅游推荐</h2>
+          <p>周末去哪、小长假去哪，帮你安排明白</p>
+          <div class="tab-search">
+            <input type="text" class="tab-search-input" placeholder="搜目的地、玩法…" maxlength="200">
+            <button class="tab-search-btn">搜索</button>
           </div>
+        </div>
+
+        <div class="gallery-section">
+          <h3 class="section-title">户外出行</h3>
           <div class="gallery">
-            <div class="gallery-card" data-keywords="剧场 沉浸式 演出">
-              <div class="img"><span class="badge">新潮</span>🎬</div>
-              <div class="caption">沉浸式剧场<small>打破第四面墙，你就是戏中人</small></div>
-            </div>
-            <div class="gallery-card" data-keywords="露营 户外 帐篷">
+            <div class="gallery-card">
               <div class="img"><span class="badge">治愈</span>🏕️</div>
               <div class="caption">城市周边露营<small>篝火、星空、烤肉，逃离 996</small></div>
             </div>
-            <div class="gallery-card" data-keywords="桌游 保龄球 电玩 聚会">
+            <div class="gallery-card">
+              <div class="img"><span class="badge">休闲</span>🚴</div>
+              <div class="caption">城市骑行路线<small>沿河老街慢骑，看到好吃的就停</small></div>
+            </div>
+            <div class="gallery-card">
+              <div class="img"><span class="badge">推荐</span>⛰️</div>
+              <div class="caption">周边一日徒步<small>轻装上阵，山野间呼吸新鲜空气</small></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="gallery-section">
+          <h3 class="section-title">文艺打卡</h3>
+          <div class="gallery">
+            <div class="gallery-card">
+              <div class="img"><span class="badge">出片</span>📸</div>
+              <div class="caption">创意园区探店<small>老厂房改造，随手拍都是大片</small></div>
+            </div>
+            <div class="gallery-card">
+              <div class="img"><span class="badge">文艺</span>🎨</div>
+              <div class="caption">美术馆巡礼<small>当代艺术、传统书画，安静一下午</small></div>
+            </div>
+            <div class="gallery-card">
+              <div class="img"><span class="badge">小众</span>🏘️</div>
+              <div class="caption">古镇老街漫步<small>青石板路，小桥流水，吃遍老字号</small></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 游玩推荐 -->
+      <div class="tab-panel" id="tab-fun">
+        <div class="tab-panel-header">
+          <h2>🎮 游玩推荐</h2>
+          <p>聚会、约会、一个人，都有好去处</p>
+          <div class="tab-search">
+            <input type="text" class="tab-search-input" placeholder="搜聚会、体验、娱乐…" maxlength="200">
+            <button class="tab-search-btn">搜索</button>
+          </div>
+        </div>
+
+        <div class="gallery-section">
+          <h3 class="section-title">聚会社交</h3>
+          <div class="gallery">
+            <div class="gallery-card">
               <div class="img"><span class="badge">聚会</span>🎱</div>
               <div class="caption">潮玩综合体<small>桌游 · 保龄球 · 电玩一站式</small></div>
             </div>
+            <div class="gallery-card">
+              <div class="img"><span class="badge">烧脑</span>🧩</div>
+              <div class="caption">密室逃脱<small>拉上朋友关小黑屋解谜，智商考验</small></div>
+            </div>
+            <div class="gallery-card">
+              <div class="img"><span class="badge">解压</span>🎤</div>
+              <div class="caption">私人 KTV<small>小包间嗨唱，吃喝一条龙</small></div>
+            </div>
           </div>
-        </section>
+        </div>
 
-        <footer class="footer">
-          © 2026 鱼乐喵 · 吃喝玩乐，一网打尽
-        </footer>
+        <div class="gallery-section">
+          <h3 class="section-title">沉浸体验</h3>
+          <div class="gallery">
+            <div class="gallery-card">
+              <div class="img"><span class="badge">新潮</span>🎬</div>
+              <div class="caption">沉浸式剧场<small>打破第四面墙，你就是戏中人</small></div>
+            </div>
+            <div class="gallery-card">
+              <div class="img"><span class="badge">动手</span>🛠️</div>
+              <div class="caption">DIY 手作坊<small>陶艺、银饰、烘焙，成品带回家</small></div>
+            </div>
+            <div class="gallery-card">
+              <div class="img"><span class="badge">放松</span>🧘</div>
+              <div class="caption">减压体验馆<small>摔碗、拳击、冥想，释放压力</small></div>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <footer class="footer">
+        © 2026 鱼乐喵 · 吃喝玩乐，一网打尽
+      </footer>
     </main>
 
+  </div>
+
+  <!-- ==================== 右下角浮动聊天小窗 ==================== -->
+  <div class="chat-float">
+    <button class="chat-toggle-btn" id="chatToggleBtn">
+      <span class="toggle-emoji">😼</span>
+      <span class="toggle-label">不知道问我好了</span>
+      <span class="dot"></span>
+    </button>
+
+    <div class="chat-popup" id="chatPopup">
+      <div class="chat-popup-header">
+        😼 鱼乐喵 · 数字分身
+        <button class="close-btn" id="chatPopupClose">✕</button>
+      </div>
+
+      <div class="chat-popup-messages" id="chatMessages">
+        <div class="msg bot">
+          <div class="sender">鱼乐喵</div>
+          😼 <b>心情 → 推荐，3 秒出答案。</b><br><br>试试发一句？「想吃火锅」「周末去哪」「好无聊」——随便问！🎉
+        </div>
+      </div>
+
+      <div class="chat-popup-chips">
+        <button class="quick-chip" data-q="不知道吃什么">🍽️ 吃啥</button>
+        <button class="quick-chip" data-q="想喝点什么，推荐一下">🧋 喝啥</button>
+        <button class="quick-chip" data-q="周末去哪玩">✈️ 去哪玩</button>
+        <button class="quick-chip" data-q="好无聊，推荐点乐子">🎉 找乐子</button>
+      </div>
+
+      <div class="chat-popup-input-row">
+        <input type="text" id="chatInput" placeholder="告诉我你的心情…" maxlength="200">
+        <button id="sendBtn">发送</button>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -853,6 +948,25 @@
       infoOpen = !infoOpen;
       profileInfoWrap.classList.toggle('open', infoOpen);
       infoToggle.textContent = infoOpen ? '▴ 收起信息' : '▾ 更多信息';
+    });
+
+    /* ===== 导航Tab切换 ===== */
+    const navTabs = document.querySelectorAll('.nav-tab');
+    const tabPanels = document.querySelectorAll('.tab-panel');
+
+    navTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const target = tab.dataset.tab;
+        // 更新激活状态
+        navTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        // 切换面板
+        tabPanels.forEach(panel => {
+          panel.classList.toggle('active', panel.id === `tab-${target}`);
+        });
+        // 移动端关闭侧栏
+        if (window.innerWidth <= 768) closeLeftPanel();
+      });
     });
 
     /* ===== 移动端左栏抽屉 ===== */
@@ -874,6 +988,28 @@
 
     mobileMenuBtn.addEventListener('click', openLeftPanel);
     leftPanelOverlay.addEventListener('click', closeLeftPanel);
+
+    /* ===== 浮动聊天窗口 ===== */
+    const chatToggleBtn = document.getElementById('chatToggleBtn');
+    const chatPopup = document.getElementById('chatPopup');
+    const chatPopupClose = document.getElementById('chatPopupClose');
+    const chatInput = document.getElementById('chatInput');
+
+    function openChat() {
+      chatPopup.classList.add('open');
+      chatToggleBtn.style.opacity = '0';
+      chatToggleBtn.style.pointerEvents = 'none';
+      setTimeout(() => chatInput.focus(), 300);
+    }
+
+    function closeChat() {
+      chatPopup.classList.remove('open');
+      chatToggleBtn.style.opacity = '1';
+      chatToggleBtn.style.pointerEvents = 'auto';
+    }
+
+    chatToggleBtn.addEventListener('click', openChat);
+    chatPopupClose.addEventListener('click', closeChat);
 
     /* ===== 推荐池 ===== */
     const dinnerPool = [
@@ -933,6 +1069,13 @@
       '试试 📚 **一本轻松好书**：马伯庸《长安的荔枝》短小精彩、李娟《我的阿勒泰》治愈放松、或者村上春树《挪威的森林》重读一遍。'
     ];
 
+    const travelPool = [
+      '周末推荐 🏕️ **城市周边露营**！找个小河边或山脚下，搭帐篷烤肉看星星，逃离手机 24 小时。适合自驾，带上帐篷睡袋就行。',
+      '一日游推荐 ⛰️ **郊区徒步**！轻装上阵，选条 5-8 公里的入门路线，山野间深呼吸，下山吃顿农家菜，完美。',
+      '文艺之旅 📸 **创意园区探店**！老厂房改造的艺术区，逛展拍照喝咖啡，一个下午刚刚好。记得穿好看点！',
+      '小长假推荐 🏘️ **古镇两日游**！选个不那么商业化的古镇，住一晚民宿，清晨在石板路上走走，吃遍老字号。'
+    ];
+
     function randomPick(pool) {
       return pool[Math.floor(Math.random() * pool.length)];
     }
@@ -951,12 +1094,13 @@
       { keys: ['汤', '暖', '冬天', '滋补', '煲汤', '炖'], reply: '喝汤暖身 🥣：① 广式老火靓汤，玉米胡萝卜排骨清甜滋润；② 江西瓦罐汤，小盅慢煨；③ 韩式参鸡汤，整鸡塞糯米人参；④ 日式味噌汤，简单快手。' },
       { keys: ['喝什么', '喝啥', '饮品', '饮料', '奶茶', '咖啡', '酒', '茶', '推荐喝的', '想喝'], reply: () => randomPick(drinkPool) },
       { keys: ['去哪玩', '周末', '玩什么', '出去', '活动', '聚会', '约会', '推荐玩的', '有什么玩的', '出游', '出行'], reply: () => randomPick(funPool) },
+      { keys: ['旅游', '旅行', '去哪旅游', '周边', '徒步', '爬山', '一日游', '打卡', '拍照', '古镇'], reply: () => randomPick(travelPool) },
       { keys: ['无聊', '找乐子', '推荐', '电影', '剧', '综艺', '游戏', '音乐', '书', '看什么', '听什么', '玩什么游戏'], reply: () => randomPick(boredPool) },
-      { keys: ['你是什么', '身份', '谁', '介绍'], reply: '我是鱼乐喵 🐱！一个吃喝玩乐全能的数字分身。不知道吃啥、喝啥、去哪玩、看什么？告诉我心情或偏好，我还你一个靠谱推荐！' },
-      { keys: ['你好', '嗨', 'hi', 'hello', '在吗'], reply: '嗨！我是鱼乐喵的数字分身 🐱～吃喝玩乐尽管问！吃啥、喝啥、去哪玩、看什么……你告诉我想法，我来安排！🎉' }
+      { keys: ['你是什么', '身份', '谁', '介绍'], reply: '我是鱼乐喵 😼！一个吃喝玩乐全能的 AI 助手。不知道吃啥、喝啥、去哪玩？告诉我心情或偏好，我还你一个靠谱推荐！' },
+      { keys: ['你好', '嗨', 'hi', 'hello', '在吗'], reply: '嗨！我是鱼乐喵 😼～吃喝玩乐尽管问！吃啥、喝啥、去哪玩……告诉我想法，我来安排！🎉' }
     ];
 
-    const fallback = '这个问题我还得再修炼一下 😅。不过你可以试试问我：吃啥、喝啥、去哪玩、周末怎么过、无聊了看什么……吃喝玩乐尽管问！';
+    const fallback = '这个问题我还得再修炼一下 😅。你可以试试问我：吃啥、喝啥、去哪玩、周末怎么过、旅游推荐……吃喝玩乐尽管问！';
 
     function matchReply(input) {
       const text = input.toLowerCase();
@@ -972,7 +1116,6 @@
     /* ===== 聊天交互 ===== */
     const messagesEl = document.getElementById('chatMessages');
     const sendBtn = document.getElementById('sendBtn');
-    const chatInput = document.getElementById('chatInput');
 
     function addMessage(text, type) {
       const div = document.createElement('div');
@@ -1003,86 +1146,62 @@
 
     /* ===== 快捷提问 ===== */
     document.querySelectorAll('.quick-chip').forEach(chip => {
-      chip.addEventListener('click', () => handleSend(chip.dataset.q));
-    });
-
-    /* ===== 右侧搜索 ===== */
-    const searchInput = document.getElementById('searchInput');
-    const searchBtn = document.getElementById('searchBtn');
-
-    function doSearch() {
-      const q = searchInput.value.trim();
-      if (!q) return;
-      // 在聊天中触发搜索
-      handleSend(q);
-      // 同时过滤卡片
-      filterCardsBySearch(q);
-      // 移动端关闭侧栏
-      if (window.innerWidth <= 768) closeLeftPanel();
-    }
-
-    searchBtn.addEventListener('click', doSearch);
-    searchInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter') doSearch();
-    });
-
-    /* ===== 卡片搜索过滤 ===== */
-    function filterCardsBySearch(query) {
-      const q = query.toLowerCase();
-      const cards = document.querySelectorAll('.gallery-card');
-      let found = false;
-      cards.forEach(card => {
-        const keywords = (card.dataset.keywords || '').toLowerCase();
-        const caption = card.querySelector('.caption')?.textContent?.toLowerCase() || '';
-        if (keywords.includes(q) || caption.includes(q)) {
-          card.style.display = '';
-          found = true;
-        } else {
-          card.style.display = 'none';
-        }
-      });
-
-      // 隐藏空 section
-      document.querySelectorAll('.gallery-section').forEach(section => {
-        const visibleCards = section.querySelectorAll('.gallery-card[style*="display: none"]');
-        const totalCards = section.querySelectorAll('.gallery-card');
-        if (visibleCards.length === totalCards.length) {
-          section.style.display = 'none';
-        } else {
-          section.style.display = '';
-        }
-      });
-
-      return found;
-    }
-
-    /* ===== 分类导航过滤 ===== */
-    const navChips = document.querySelectorAll('.nav-chip');
-
-    navChips.forEach(chip => {
       chip.addEventListener('click', () => {
-        // 更新 active 状态
-        navChips.forEach(c => c.classList.remove('active'));
-        chip.classList.add('active');
+        if (!chatPopup.classList.contains('open')) openChat();
+        handleSend(chip.dataset.q);
+      });
+    });
 
-        const filter = chip.dataset.filter;
+    /* ===== Tab内搜索 ===== */
+    document.querySelectorAll('.tab-search').forEach(searchBox => {
+      const input = searchBox.querySelector('.tab-search-input');
+      const btn = searchBox.querySelector('.tab-search-btn');
 
-        // 重置搜索
-        searchInput.value = '';
-        document.querySelectorAll('.gallery-card').forEach(card => {
-          card.style.display = '';
+      function doTabSearch() {
+        const q = input.value.trim();
+        if (!q) return;
+        // 触发聊天
+        if (!chatPopup.classList.contains('open')) openChat();
+        handleSend(q);
+        // 过滤当前tab的卡片
+        const activePanel = document.querySelector('.tab-panel.active');
+        if (!activePanel) return;
+        const cards = activePanel.querySelectorAll('.gallery-card');
+        const lowerQ = q.toLowerCase();
+        cards.forEach(card => {
+          const text = card.textContent.toLowerCase();
+          card.style.display = text.includes(lowerQ) ? '' : 'none';
         });
+        // 隐藏空的section
+        activePanel.querySelectorAll('.gallery-section').forEach(section => {
+          const visible = section.querySelectorAll('.gallery-card:not([style*="display: none"])');
+          section.style.display = visible.length === 0 ? 'none' : '';
+        });
+      }
 
-        if (filter === 'all') {
-          document.querySelectorAll('.gallery-section').forEach(s => s.style.display = '');
-        } else {
-          document.querySelectorAll('.gallery-section').forEach(section => {
-            if (section.dataset.category === filter) {
-              section.style.display = '';
-            } else {
-              section.style.display = 'none';
-            }
-          });
+      btn.addEventListener('click', doTabSearch);
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter') doTabSearch();
+      });
+    });
+
+    // 切换Tab时清除搜索
+    navTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab-search-input').forEach(inp => inp.value = '');
+        document.querySelectorAll('.gallery-card').forEach(c => c.style.display = '');
+        document.querySelectorAll('.gallery-section').forEach(s => s.style.display = '');
+      });
+    });
+
+    /* ===== 点击卡片触发聊天 ===== */
+    document.querySelectorAll('.gallery-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const caption = card.querySelector('.caption');
+        const title = caption?.childNodes[0]?.textContent?.trim() || '';
+        if (title) {
+          openChat();
+          handleSend(title);
         }
       });
     });
