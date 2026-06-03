@@ -455,8 +455,8 @@
       position: absolute;
       bottom: 70px;
       left: 0;
-      width: 360px;
-      max-height: 480px;
+      width: 420px;
+      max-height: 520px;
       background: var(--white);
       border-radius: var(--radius);
       box-shadow: 0 8px 40px rgba(60,20,0,.2);
@@ -670,14 +670,19 @@
       .gallery { grid-template-columns: repeat(2, 1fr); gap: 10px; }
       .gallery-card .img { font-size: 36px; }
 
-      .chat-float { bottom: 16px; left: 16px; }
+      .chat-float { bottom: 16px; left: 8px; right: 8px; }
       .chat-toggle-btn { padding: 10px 16px; font-size: 13px; }
       .chat-toggle-btn .toggle-label { display: none; }
       .chat-popup {
-        left: 0; right: 8px;
+        position: fixed;
+        bottom: 70px;
+        left: 6px;
+        right: 6px;
         width: auto;
-        max-height: 55vh;
+        max-height: 70vh;
+        border-radius: 16px 16px 0 0;
       }
+      .chat-popup-messages { height: 200px; }
     }
 
     @media (max-width: 480px) {
@@ -1011,8 +1016,16 @@
     chatToggleBtn.addEventListener('click', openChat);
     chatPopupClose.addEventListener('click', closeChat);
 
-    /* ===== AI 聊天 ===== */
-    const API_BASE = 'http://localhost:3456';
+    /* ===== AI 聊天（直连 DeepSeek） ===== */
+    const DS_API = 'https://api.deepseek.com/v1/chat/completions';
+    const DS_KEY = 'sk-9ec7f1ac341348ae82a4f6919f1e818c';
+
+    const SYSTEM_PROMPT = `你是胖喵的数字分身，核心任务是吃喝玩乐推荐。
+覆盖：美食、饮品、旅游、玩乐。
+说话风格：热情、简短、1-3句话、直接给答案不铺垫。
+推荐要具体，比如「重庆老火锅，九宫格牛油锅底」而不是只说「火锅」。
+关于胖喵：前端开发者，这个页面就是他手写的。联系：hello@pangmiao.dev。`;
+
     let conversationHistory = []; // { role: 'user' | 'assistant', content }
 
     const messagesEl = document.getElementById('chatMessages');
@@ -1056,11 +1069,20 @@
 
       const typingEl = addTyping();
 
+      // Build messages for DeepSeek
+      const messages = [{ role: 'system', content: SYSTEM_PROMPT }];
+      for (const h of conversationHistory) {
+        messages.push({ role: h.role, content: h.content });
+      }
+
       try {
-        const resp = await fetch(API_BASE + '/api/chat', {
+        const resp = await fetch(DS_API, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: q, history: conversationHistory }),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${DS_KEY}`,
+          },
+          body: JSON.stringify({ model: 'deepseek-chat', messages, max_tokens: 600, stream: true }),
         });
 
         if (!resp.ok) throw new Error('API error');
@@ -1081,29 +1103,27 @@
           buffer = lines.pop() || '';
           for (const line of lines) {
             if (!line.startsWith('data: ')) continue;
+            const raw = line.slice(6).trim();
+            if (raw === '[DONE]') continue;
             try {
-              const data = JSON.parse(line.slice(6));
-              if (data.type === 'text') {
-                fullText += data.text;
+              const json = JSON.parse(raw);
+              const delta = json.choices?.[0]?.delta?.content;
+              if (delta) {
+                fullText += delta;
                 botDiv.innerHTML = '<div class="sender">胖喵</div>' + fullText;
                 messagesEl.scrollTop = messagesEl.scrollHeight;
-              } else if (data.type === 'error') {
-                botDiv.innerHTML = '<div class="sender">胖喵</div>' + data.error;
               }
             } catch {}
           }
         }
 
-        if (!fullText) {
-          botDiv.innerHTML = '<div class="sender">胖喵</div>抱歉，出了点问题，稍后再试～';
-        }
+        if (!fullText) botDiv.innerHTML = '<div class="sender">胖喵</div>抱歉，出了点问题～';
         conversationHistory.push({ role: 'assistant', content: fullText || '...' });
-        // 保留最近 20 轮对话
         if (conversationHistory.length > 40) conversationHistory = conversationHistory.slice(-40);
 
       } catch (err) {
         removeTyping();
-        addMessage('抱歉，暂时连不上 AI 服务 😅<br>请确认已启动后端：<code>npm start</code>', 'bot');
+        addMessage('抱歉，网络出了点问题 😅 刷新试试？', 'bot');
       }
     }
 
