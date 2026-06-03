@@ -330,7 +330,7 @@
     /* --- Gallery --- */
     .gallery {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 16px;
     }
 
@@ -365,6 +365,8 @@
     .gallery-card:nth-child(4) .img { background: linear-gradient(135deg, #fce8d8, #f0b868); }
     .gallery-card:nth-child(5) .img { background: linear-gradient(135deg, #fef2e0, #f6d090); }
     .gallery-card:nth-child(6) .img { background: linear-gradient(135deg, #fde4cc, #f4c078); }
+    .gallery-card:nth-child(7) .img { background: linear-gradient(135deg, #fde0d8, #f2b888); }
+    .gallery-card:nth-child(8) .img { background: linear-gradient(135deg, #fee8d4, #f6c898); }
 
     .gallery-card .badge {
       position: absolute;
@@ -618,8 +620,8 @@
     .mobile-menu-btn {
       display: none;
       position: fixed;
-      bottom: 24px;
-      right: 24px;
+      top: 12px;
+      left: 12px;
       width: 48px;
       height: 48px;
       border-radius: 50%;
@@ -645,7 +647,7 @@
     @media (max-width: 1024px) {
       .left-panel { width: 260px; }
       .tab-panel { padding: 24px 24px 0; }
-      .gallery { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .gallery { grid-template-columns: repeat(3, 1fr); gap: 12px; }
       .chat-popup { width: 320px; max-height: 420px; }
     }
 
@@ -667,6 +669,8 @@
       .mobile-menu-btn { display: flex; }
 
       .tab-panel { padding: 20px 16px 0; }
+      .tab-panel-header { text-align: center; }
+      .tab-search { max-width: 100%; margin: 16px 0 0; }
       .gallery { grid-template-columns: repeat(2, 1fr); gap: 10px; }
       .gallery-card .img { font-size: 36px; }
 
@@ -783,6 +787,10 @@
               <div class="img"><span class="badge">经典</span>🍕</div>
               <div class="caption">那不勒斯披萨<small>窑炉现烤，焦边豹纹</small></div>
             </div>
+            <div class="gallery-card">
+              <div class="img"><span class="badge">暖心</span>🍲</div>
+              <div class="caption">日式寿喜烧<small>和牛蘸生蛋液，甜咸交织入口即化</small></div>
+            </div>
           </div>
         </div>
 
@@ -800,6 +808,10 @@
             <div class="gallery-card">
               <div class="img"><span class="badge">小众</span>🍺</div>
               <div class="caption">精酿啤酒<small>IPA、Stout、酸啤，总有对味</small></div>
+            </div>
+            <div class="gallery-card">
+              <div class="img"><span class="badge">清爽</span>🍹</div>
+              <div class="caption">莫吉托<small>朗姆+青柠+薄荷+苏打，夏日标配</small></div>
             </div>
           </div>
         </div>
@@ -831,6 +843,10 @@
               <div class="img"><span class="badge">推荐</span>⛰️</div>
               <div class="caption">周边一日徒步<small>轻装上阵，山野间呼吸新鲜空气</small></div>
             </div>
+            <div class="gallery-card">
+              <div class="img"><span class="badge">放松</span>🌿</div>
+              <div class="caption">郊野公园野餐<small>带块毯子带本书，晒一下午太阳</small></div>
+            </div>
           </div>
         </div>
 
@@ -848,6 +864,10 @@
             <div class="gallery-card">
               <div class="img"><span class="badge">小众</span>🏘️</div>
               <div class="caption">古镇老街漫步<small>青石板路，小桥流水，吃遍老字号</small></div>
+            </div>
+            <div class="gallery-card">
+              <div class="img"><span class="badge">夜游</span>🌃</div>
+              <div class="caption">城市夜景天台<small>一杯酒俯瞰万家灯火，浪漫满分</small></div>
             </div>
           </div>
         </div>
@@ -879,6 +899,10 @@
               <div class="img"><span class="badge">解压</span>🎤</div>
               <div class="caption">私人 KTV<small>小包间嗨唱，吃喝一条龙</small></div>
             </div>
+            <div class="gallery-card">
+              <div class="img"><span class="badge">竞技</span>🎯</div>
+              <div class="caption">射箭·飞镖馆<small>解压神器，新手也能很快上手</small></div>
+            </div>
           </div>
         </div>
 
@@ -896,6 +920,10 @@
             <div class="gallery-card">
               <div class="img"><span class="badge">放松</span>🧘</div>
               <div class="caption">减压体验馆<small>摔碗、拳击、冥想，释放压力</small></div>
+            </div>
+            <div class="gallery-card">
+              <div class="img"><span class="badge">趣味</span>🎨</div>
+              <div class="caption">流体画体验<small>不用画笔，颜料倒下去就是艺术</small></div>
             </div>
           </div>
         </div>
