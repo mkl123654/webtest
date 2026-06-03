@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>鱼乐喵 · 吃喝玩乐推荐</title>
+  <style>
+    /* ===== Reset & Base ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --deep:    #4a2410;
+      --warm:    #e07830;
+      --accent:  #f49a50;
+      --gold:    #ecaa38;
+      --light:   #fff4e8;
+      --white:   #fffdf8;
+      --gray:    #a08068;
+      --bg:      #fff6ed;
+      --radius:  16px;
+      --radius-sm: 10px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                   "Microsoft YaHei", sans-serif;
+      background: linear-gradient(180deg, #fff7ef 0%, #fff3e4 50%, #fef0dc 100%);
+      background-attachment: fixed;
+      color: var(--deep);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ===== Two-Column Layout ===== */
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ===== Left Panel ===== */
+    .left-panel {
+      width: 380px;
+      flex-shrink: 0;
+      background: linear-gradient(180deg, #fff8ee 0%, #fff1e0 40%, #feead2 100%);
+      border-right: 1px solid #f0d4b8;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* --- Profile Section --- */
+    .profile-section {
+      padding: 32px 28px 20px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .avatar-wrap {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 14px;
+    }
+
+    .avatar-main {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #e05820, #e07830, #f09850, #f4b840);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      border: 3px solid #fff;
+      box-shadow: 0 4px 20px rgba(200,100,30,.25);
+    }
+
+    .avatar-status {
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+      width: 18px;
+      height: 18px;
+      background: #4ade80;
+      border-radius: 50%;
+      border: 3px solid #fff;
+    }
+
+    .profile-name {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--deep);
+      letter-spacing: 2px;
+      margin-bottom: 4px;
+    }
+
+    .profile-tagline {
+      font-size: 13px;
+      color: var(--gray);
+      margin-bottom: 2px;
+    }
+
+    .profile-hint {
+      display: inline-block;
+      font-size: 11px;
+      color: var(--warm);
+      cursor: pointer;
+      user-select: none;
+      transition: opacity .2s;
+      margin-top: 2px;
+    }
+
+    .profile-hint:hover { opacity: .7; }
+
+    /* Expandable info */
+    .profile-info-wrap {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .45s ease, margin-top .35s ease;
+      margin-top: 0;
+    }
+
+    .profile-info-wrap.open {
+      max-height: 260px;
+      margin-top: 14px;
+    }
+
+    .profile-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .info-chip {
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      border: 1px solid #f0d4b8;
+      text-align: left;
+    }
+
+    .info-chip .label {
+      font-size: 10px;
+      color: var(--gray);
+      letter-spacing: 1px;
+      margin-bottom: 2px;
+    }
+
+    .info-chip .value {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--deep);
+    }
+
+    /* --- Divider --- */
+    .panel-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 28px;
+      flex-shrink: 0;
+    }
+
+    .panel-divider::before,
+    .panel-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #f0d4b8;
+    }
+
+    .panel-divider .divider-label {
+      font-size: 12px;
+      color: var(--gray);
+      white-space: nowrap;
+      letter-spacing: 1px;
+    }
+
+    /* --- Digital Twin (Chat) Section --- */
+    .chat-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 16px 20px 20px;
+      min-height: 0;
+    }
+
+    .chat-section-header {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--warm);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .chat-section-header .ai-badge {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--warm));
+      color: #fff;
+      font-weight: 500;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      background: #fff;
+      border-radius: var(--radius-sm);
+      border: 1px solid #f0d4b8;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 0;
+    }
+
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-thumb { background: #f0d4b8; border-radius: 2px; }
+
+    .msg {
+      max-width: 92%;
+      padding: 8px 12px;
+      border-radius: 12px;
+      font-size: 12.5px;
+      line-height: 1.5;
+      animation: fadeIn .25s ease;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    .msg.user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, var(--accent), var(--warm));
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+
+    .msg.bot {
+      align-self: flex-start;
+      background: #fffaf4;
+      border: 1px solid #f0d8c0;
+      border-bottom-left-radius: 4px;
+    }
+
+    .msg .sender {
+      font-size: 10px;
+      color: var(--gray);
+      margin-bottom: 2px;
+    }
+
+    .msg.bot .sender { color: var(--warm); }
+
+    .quick-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 10px 0 0;
+      flex-shrink: 0;
+    }
+
+    .quick-chip {
+      font-size: 11px;
+      padding: 5px 12px;
+      border-radius: 16px;
+      border: 1px solid #f0d4b8;
+      background: #fff;
+      color: var(--warm);
+      cursor: pointer;
+      transition: all .15s;
+      white-space: nowrap;
+    }
+
+    .quick-chip:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    .chat-input-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      flex-shrink: 0;
+    }
+
+    .chat-input-row input {
+      flex: 1;
+      border: 1px solid #f0d4b8;
+      border-radius: 20px;
+      padding: 9px 16px;
+      font-size: 13px;
+      outline: none;
+      transition: border-color .15s;
+      background: #fff;
+      min-width: 0;
+    }
+
+    .chat-input-row input:focus { border-color: var(--accent); }
+
+    .chat-input-row button {
+      background: linear-gradient(135deg, var(--accent), var(--warm));
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      padding: 9px 18px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: opacity .15s;
+      white-space: nowrap;
+      flex-shrink: 0;
+      font-weight: 500;
+    }
+
+    .chat-input-row button:hover { opacity: .9; }
+
+    /* ===== Right Panel ===== */
+    .right-panel {
+      flex: 1;
+      min-width: 0;
+      overflow-y: auto;
+    }
+
+    /* --- Search & Nav Bar --- */
+    .search-nav {
+      padding: 28px 40px 0;
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 10;
+      padding-bottom: 8px;
+    }
+
+    .search-box {
+      display: flex;
+      gap: 10px;
+      background: #fff;
+      border: 1px solid #f0d4b8;
+      border-radius: 28px;
+      padding: 6px 6px 6px 20px;
+      box-shadow: 0 2px 12px rgba(180,100,40,.06);
+      transition: box-shadow .2s, border-color .2s;
+    }
+
+    .search-box:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 4px 20px rgba(200,100,30,.12);
+    }
+
+    .search-box input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 15px;
+      background: transparent;
+      color: var(--deep);
+      min-width: 0;
+    }
+
+    .search-box input::placeholder { color: #c4b09a; }
+
+    .search-box button {
+      background: linear-gradient(135deg, var(--accent), var(--warm));
+      color: #fff;
+      border: none;
+      border-radius: 22px;
+      padding: 10px 24px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: opacity .15s;
+      white-space: nowrap;
+      flex-shrink: 0;
+      font-weight: 500;
+    }
+
+    .search-box button:hover { opacity: .9; }
+
+    .nav-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .nav-chip {
+      font-size: 13px;
+      padding: 6px 16px;
+      border-radius: 18px;
+      border: 1px solid #f0d4b8;
+      background: #fff;
+      color: var(--deep);
+      cursor: pointer;
+      transition: all .15s;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .nav-chip:hover, .nav-chip.active {
+      background: var(--warm);
+      color: #fff;
+      border-color: var(--warm);
+    }
+
+    /* --- Content Area --- */
+    .content-area {
+      padding: 24px 40px 60px;
+    }
+
+    /* --- Welcome Banner --- */
+    .welcome-banner {
+      background: linear-gradient(135deg, #fff6e8, #ffeee0);
+      border: 1px solid #f0d4b8;
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .welcome-emoji {
+      font-size: 48px;
+      flex-shrink: 0;
+    }
+
+    .welcome-text h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--deep);
+      margin-bottom: 4px;
+    }
+
+    .welcome-text p {
+      font-size: 14px;
+      color: var(--gray);
+    }
+
+    /* --- Section Headers --- */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--deep);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 22px;
+      background: linear-gradient(180deg, var(--accent), var(--gold));
+      border-radius: 2px;
+    }
+
+    .section-more {
+      font-size: 13px;
+      color: var(--warm);
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity .15s;
+    }
+
+    .section-more:hover { opacity: .7; }
+
+    /* --- Gallery --- */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+
+    .gallery-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid #f0d6bc;
+      box-shadow: 0 1px 4px rgba(180,100,40,.05);
+      transition: transform .2s, box-shadow .2s;
+      cursor: pointer;
+    }
+
+    .gallery-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 28px rgba(180,100,40,.14);
+    }
+
+    .gallery-card .img {
+      aspect-ratio: 16 / 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 52px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .gallery-card:nth-child(1) .img { background: linear-gradient(135deg, #fde8d0, #f8c890); }
+    .gallery-card:nth-child(2) .img { background: linear-gradient(135deg, #ffe4d0, #f8b878); }
+    .gallery-card:nth-child(3) .img { background: linear-gradient(135deg, #fef0dc, #f5c080); }
+    .gallery-card:nth-child(4) .img { background: linear-gradient(135deg, #fce8d8, #f0b868); }
+    .gallery-card:nth-child(5) .img { background: linear-gradient(135deg, #fef2e0, #f6d090); }
+    .gallery-card:nth-child(6) .img { background: linear-gradient(135deg, #fde4cc, #f4c078); }
+
+    .gallery-card .badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 10px;
+      background: rgba(0,0,0,.45);
+      color: #fff;
+      backdrop-filter: blur(4px);
+    }
+
+    .gallery-card .caption {
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--deep);
+    }
+
+    .gallery-card .caption small {
+      display: block;
+      font-size: 12px;
+      color: var(--gray);
+      font-weight: 400;
+      margin-top: 3px;
+    }
+
+    /* --- Footer --- */
+    .footer {
+      text-align: center;
+      padding: 32px 20px;
+      font-size: 13px;
+      color: var(--gray);
+      border-top: 1px solid #f0d6bc;
+    }
+
+    /* ===== Empty State ===== */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--gray);
+    }
+
+    .empty-state .empty-emoji {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+
+    .empty-state p {
+      font-size: 15px;
+    }
+
+    /* ===== Mobile Toggles ===== */
+    .mobile-menu-btn {
+      display: none;
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #fff;
+      border: 1px solid #f0d4b8;
+      font-size: 22px;
+      cursor: pointer;
+      box-shadow: 0 4px 18px rgba(180,100,40,.15);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .left-panel-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.35);
+      z-index: 98;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 1024px) {
+      .left-panel {
+        width: 340px;
+      }
+      .search-nav {
+        padding: 20px 24px 0;
+      }
+      .content-area {
+        padding: 20px 24px 40px;
+      }
+      .gallery {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .left-panel {
+        position: fixed;
+        top: 0; left: 0;
+        width: 320px;
+        height: 100vh;
+        z-index: 99;
+        transform: translateX(-100%);
+        transition: transform .3s ease;
+        border-right: none;
+        box-shadow: 4px 0 30px rgba(0,0,0,.15);
+      }
+
+      .left-panel.open {
+        transform: translateX(0);
+      }
+
+      .left-panel-overlay.show { display: block; }
+
+      .mobile-menu-btn { display: flex; }
+
+      .search-nav {
+        padding: 16px 16px 0;
+      }
+
+      .content-area {
+        padding: 16px 16px 40px;
+      }
+
+      .gallery {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+
+      .gallery-card .img { font-size: 40px; }
+      .welcome-banner { flex-direction: column; text-align: center; }
+      .profile-section { padding: 24px 20px 16px; }
+    }
+
+    @media (max-width: 480px) {
+      .gallery {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .gallery-card .img { font-size: 32px; aspect-ratio: 1/1; }
+      .gallery-card .caption { padding: 8px 10px; font-size: 12px; }
+      .gallery-card .caption small { font-size: 10px; }
+      .nav-chips { gap: 6px; }
+      .nav-chip { font-size: 12px; padding: 5px 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app">
+
+    <!-- ==================== 左栏：个人头像 + 信息 + 数字分身 ==================== -->
+    <aside class="left-panel" id="leftPanel">
+
+      <!-- 个人信息 -->
+      <div class="profile-section">
+        <div class="avatar-wrap">
+          <div class="avatar-main">🐱</div>
+          <div class="avatar-status"></div>
+        </div>
+        <div class="profile-name">鱼乐喵</div>
+        <div class="profile-tagline">吃喝玩乐全能助手 · 你说心情，我给推荐</div>
+        <span class="profile-hint" id="infoToggle">▴ 收起信息</span>
+
+        <div class="profile-info-wrap open" id="profileInfoWrap">
+          <div class="profile-info-grid">
+            <div class="info-chip">
+              <div class="label">身份</div>
+              <div class="value">AI 吃喝玩乐推荐助手</div>
+            </div>
+            <div class="info-chip">
+              <div class="label">状态</div>
+              <div class="value">🟢 在线，随时可聊</div>
+            </div>
+            <div class="info-chip">
+              <div class="label">覆盖范围</div>
+              <div class="value">美食 · 饮品 · 出游 · 娱乐</div>
+            </div>
+            <div class="info-chip">
+              <div class="label">核心技能</div>
+              <div class="value">你说心情，我还你推荐</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 分隔线 -->
+      <div class="panel-divider">
+        <span class="divider-label">🤖 数字分身</span>
+      </div>
+
+      <!-- 数字分身：嵌入式聊天 -->
+      <div class="chat-section">
+        <div class="chat-section-header">
+          💬 和鱼乐喵聊聊
+          <span class="ai-badge">AI</span>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+          <div class="msg bot">
+            <div class="sender">鱼乐喵</div>
+            嗨！我是你的数字分身 🐱<br>吃喝玩乐尽管问！吃啥、喝啥、去哪玩、看什么？告诉我你的心情或偏好，我帮你挑！🎉
+          </div>
+        </div>
+
+        <div class="quick-chips">
+          <button class="quick-chip" data-q="不知道吃什么">🍽️ 吃啥</button>
+          <button class="quick-chip" data-q="想喝点什么，推荐一下">🧋 喝啥</button>
+          <button class="quick-chip" data-q="周末去哪玩">🎯 去哪玩</button>
+          <button class="quick-chip" data-q="好无聊，推荐点乐子">🎉 找乐子</button>
+        </div>
+
+        <div class="chat-input-row">
+          <input type="text" id="chatInput" placeholder="输入你的心情或偏好…" maxlength="200">
+          <button id="sendBtn">发送</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- 移动端遮罩 -->
+    <div class="left-panel-overlay" id="leftPanelOverlay"></div>
+
+    <!-- 移动端菜单按钮 -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn" title="菜单">🐱</button>
+
+    <!-- ==================== 右栏：搜索导航 + 推荐展示 ==================== -->
+    <main class="right-panel">
+
+      <!-- 搜索 & 导航 -->
+      <div class="search-nav">
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="🔍  搜索美食、饮品、玩乐…" maxlength="200">
+          <button id="searchBtn">搜索</button>
+        </div>
+        <div class="nav-chips" id="navChips">
+          <span class="nav-chip active" data-filter="all">🏠 全部</span>
+          <span class="nav-chip" data-filter="food">🍽️ 美食</span>
+          <span class="nav-chip" data-filter="drink">🧋 饮品</span>
+          <span class="nav-chip" data-filter="fun">🎮 玩乐</span>
+        </div>
+      </div>
+
+      <!-- 内容区域 -->
+      <div class="content-area">
+
+        <!-- 欢迎横幅 -->
+        <div class="welcome-banner">
+          <div class="welcome-emoji">🌟</div>
+          <div class="welcome-text">
+            <h2>今天想做什么？</h2>
+            <p>搜一搜、逛一逛，找到你的下一站吃喝玩乐目的地</p>
+          </div>
+        </div>
+
+        <!-- 美食图鉴 -->
+        <section class="gallery-section" data-category="food">
+          <div class="section-header">
+            <h2 class="section-title">🍽️ 美食图鉴</h2>
+            <span class="section-more">查看更多 →</span>
+          </div>
+          <div class="gallery">
+            <div class="gallery-card" data-keywords="面 牛肉面 兰州 拉面">
+              <div class="img"><span class="badge">必吃</span>🍜</div>
+              <div class="caption">兰州牛肉面<small>一清二白三红四绿五黄</small></div>
+            </div>
+            <div class="gallery-card" data-keywords="海鲜 生腌 潮汕">
+              <div class="img"><span class="badge">特色</span>🦀</div>
+              <div class="caption">潮汕生腌<small>潮汕毒药，鲜入骨髓</small></div>
+            </div>
+            <div class="gallery-card" data-keywords="披萨 意大利 西餐">
+              <div class="img"><span class="badge">经典</span>🍕</div>
+              <div class="caption">那不勒斯披萨<small>窑炉现烤，焦边豹纹</small></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 饮品推荐 -->
+        <section class="gallery-section" data-category="drink">
+          <div class="section-header">
+            <h2 class="section-title">🧋 饮品推荐</h2>
+            <span class="section-more">查看更多 →</span>
+          </div>
+          <div class="gallery">
+            <div class="gallery-card" data-keywords="柠檬茶 手打 茶">
+              <div class="img"><span class="badge">爆款</span>🧋</div>
+              <div class="caption">手打柠檬茶<small>暴打香水柠檬，一口入夏</small></div>
+            </div>
+            <div class="gallery-card" data-keywords="咖啡 手冲 精品">
+              <div class="img"><span class="badge">精品</span>☕</div>
+              <div class="caption">精品手冲咖啡<small>埃塞俄比亚耶加雪菲，花香四溢</small></div>
+            </div>
+            <div class="gallery-card" data-keywords="啤酒 精酿 IPA">
+              <div class="img"><span class="badge">小众</span>🍺</div>
+              <div class="caption">精酿啤酒<small>IPA、Stout、酸啤，总有对味</small></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 玩乐去处 -->
+        <section class="gallery-section" data-category="fun">
+          <div class="section-header">
+            <h2 class="section-title">🎮 玩乐去处</h2>
+            <span class="section-more">查看更多 →</span>
+          </div>
+          <div class="gallery">
+            <div class="gallery-card" data-keywords="剧场 沉浸式 演出">
+              <div class="img"><span class="badge">新潮</span>🎬</div>
+              <div class="caption">沉浸式剧场<small>打破第四面墙，你就是戏中人</small></div>
+            </div>
+            <div class="gallery-card" data-keywords="露营 户外 帐篷">
+              <div class="img"><span class="badge">治愈</span>🏕️</div>
+              <div class="caption">城市周边露营<small>篝火、星空、烤肉，逃离 996</small></div>
+            </div>
+            <div class="gallery-card" data-keywords="桌游 保龄球 电玩 聚会">
+              <div class="img"><span class="badge">聚会</span>🎱</div>
+              <div class="caption">潮玩综合体<small>桌游 · 保龄球 · 电玩一站式</small></div>
+            </div>
+          </div>
+        </section>
+
+        <footer class="footer">
+          © 2026 鱼乐喵 · 吃喝玩乐，一网打尽
+        </footer>
+      </div>
+    </main>
+
+  </div>
+
+  <script>
+    /* ===== 个人信息展开/收起 ===== */
+    const infoToggle = document.getElementById('infoToggle');
+    const profileInfoWrap = document.getElementById('profileInfoWrap');
+    let infoOpen = true;
+
+    infoToggle.addEventListener('click', () => {
+      infoOpen = !infoOpen;
+      profileInfoWrap.classList.toggle('open', infoOpen);
+      infoToggle.textContent = infoOpen ? '▴ 收起信息' : '▾ 更多信息';
+    });
+
+    /* ===== 移动端左栏抽屉 ===== */
+    const leftPanel = document.getElementById('leftPanel');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const leftPanelOverlay = document.getElementById('leftPanelOverlay');
+
+    function openLeftPanel() {
+      leftPanel.classList.add('open');
+      leftPanelOverlay.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLeftPanel() {
+      leftPanel.classList.remove('open');
+      leftPanelOverlay.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    mobileMenuBtn.addEventListener('click', openLeftPanel);
+    leftPanelOverlay.addEventListener('click', closeLeftPanel);
+
+    /* ===== 推荐池 ===== */
+    const dinnerPool = [
+      '试试 🍜 **兰州牛肉面**！汤清味浓，一清二白三红四绿五黄，配一碟牛肉和二细面，吃完浑身舒坦。',
+      '推荐 🍲 **酸菜鱼**！嫩滑鱼片配酸爽汤底，下饭一绝。自己在家做也简单，买包好酸菜鱼料就行。',
+      '不如来份 🍛 **咖喱猪排饭**！酥脆猪排浇上浓稠咖喱，米饭杀手。配一杯冰乌龙，完美。',
+      '吃 🥟 **手工水饺**吧！猪肉白菜或韭菜鸡蛋，蘸醋和辣椒油，简单又满足。',
+      '推荐 🍝 **番茄肉酱意面**！自己熬一锅肉酱，面条煮到 al dente，撒帕玛森芝士，比餐厅还香。',
+      '试试 🥘 **韩式泡菜豆腐汤**！酸辣开胃，热腾腾一锅配白米饭，治愈一整天的疲惫。',
+      '来一份 🍗 **照烧鸡腿饭**！鸡皮煎到焦脆，浇甜咸照烧汁，配西兰花和溏心蛋，完美。',
+      '搞点 🥩 **黑椒牛柳炒意面**！牛肉嫩滑，黑椒味浓郁，15 分钟搞定，比外卖快。'
+    ];
+
+    const spicyPool = [
+      '辣的来 🔥 **水煮牛肉**！满满花椒辣椒，牛肉嫩到入口即化，底下垫豆芽莴笋，麻辣鲜香全齐了。',
+      '辣党必试 🌶️ **湖南小炒肉**！五花肉煸到焦边，加螺丝椒豆豉爆炒，配三碗米饭不过分。',
+      '安排 🍲 **重庆老火锅**！九宫格牛油锅底，毛肚鸭肠黄喉走一波，越煮越香。',
+      '推荐 🔥 **麻婆豆腐**！嫩豆腐烧出红油，花椒面是灵魂，一勺浇饭上，简单粗暴的好吃。'
+    ];
+
+    const quickPool = [
+      '快手之选 🍳 **蛋炒饭**！隔夜饭是灵魂，大火颠锅粒粒分明，加火腿丁葱花，5 分钟出锅。',
+      '超简单 🍜 **葱油拌面**！小葱熬葱油，酱油白糖一拌，比方便面好吃十倍，成本不到三块。',
+      '懒人必备 🥪 **番茄鸡蛋盖饭**！鸡蛋滑嫩番茄酸甜，盖热米饭上，从做到吃 10 分钟。',
+      '快手推荐 🫕 **紫菜蛋花汤 + 煎饺**！速冻饺子底煎金黄，一碗蛋花汤配着，比煮泡面还快。'
+    ];
+
+    const lateNightPool = [
+      '深夜来份 🍢 **烤串**！羊肉串牛肉串鸡翅鸡胗，撒孜然辣椒，配一瓶冰啤酒，爽。',
+      '夜宵经典 🥣 **皮蛋瘦肉粥**！米粒开花肉丝嫩滑，撒葱花白胡椒，暖胃又不撑。',
+      '饿了？🦪 **蒜蓉烤生蚝**！蒜蓉粉丝铺满，炭火一烤滋滋冒油，夜市第一选择。',
+      '深夜食堂 🍳 **泡面加料版**！煮泡面卧个荷包蛋加片芝士，撒把葱花，瞬间高级三倍。'
+    ];
+
+    const drinkPool = [
+      '想喝点特别的？🧋 **手打柠檬茶**！香水柠檬暴打出汁，加冰加茶底，酸爽解腻，配什么吃的都搭。',
+      '推荐 ☕ **冰博客拿铁**！浓缩咖啡浇在冰牛奶上，奶甜咖啡苦分层入口，比普通拿铁醇厚三倍。',
+      '试试 🍺 **精酿 IPA**！柑橘松针香气，苦中带甘，配烤肉或炸鸡绝了。入门推荐浑浊 IPA，苦度低果香浓。',
+      '来杯 🍹 **莫吉托**！朗姆酒+青柠+薄荷+苏打，清爽微醺，夏天标配。自己在家做也简单。',
+      '天冷了？🍵 **围炉煮茶**！炭火小炉烤橘子红薯，煮一壶老白茶或普洱，和朋友聊一下午。',
+      '推荐 🥤 **杨枝甘露**！芒果打底，西柚粒西米椰浆层层叠加，甜品和饮品二合一。'
+    ];
+
+    const funPool = [
+      '周末推荐 🏕️ **城市周边露营**！找个小河边或山脚下，搭帐篷烤肉看星星，逃离手机 24 小时。',
+      '和朋友一起去 🎬 **沉浸式剧场**！不是坐着看戏，是跟着演员在场景里走，你就是故事的一部分。',
+      '试试 🎱 **潮玩综合体**！桌游+保龄球+飞镖+电玩一站搞定，适合一群人闹一下午。',
+      '推荐 🎨 **DIY 手作坊**！陶艺、银饰、画画、烘焙，选一个感兴趣的自己动手做，成品还能带回家。',
+      '去 🚴 **城市骑行**！租辆单车沿河边或老街骑，看到好吃的就停下来，比健身房有意思多了。',
+      '小众推荐 🧩 **密室逃脱**！拉上三五个朋友关在小黑屋里解谜，智商和友情的双重考验。'
+    ];
+
+    const boredPool = [
+      '无聊的话 🎮 **试试一款新游戏**！《塞尔达传说》《星露谷物语》《双人成行》（拉上朋友），或者手机上的《崩坏：星穹铁道》，总有一款让你上头。',
+      '推荐 📺 **刷一部高分剧**：《繁花》看上海话和90年代、《重启人生》看日式温柔重生、《黑暗荣耀》看爽文式复仇。挑一个今晚就开始。',
+      '来点 🎵 **换换歌单口味**！City Pop（山下达郎、竹内玛莉亚）适合开车兜风；Lofi Hip Hop 适合工作背景；后摇（惘闻、MONO）适合深夜放空。',
+      '试试 📚 **一本轻松好书**：马伯庸《长安的荔枝》短小精彩、李娟《我的阿勒泰》治愈放松、或者村上春树《挪威的森林》重读一遍。'
+    ];
+
+    function randomPick(pool) {
+      return pool[Math.floor(Math.random() * pool.length)];
+    }
+
+    /* ===== 知识库 ===== */
+    const knowledge = [
+      { keys: ['不知道吃什么', '今天吃什么', '吃什么', '晚餐', '晚饭', '中午', '午饭', '早餐', '早饭', '晚上吃', '中午吃'], reply: () => randomPick(dinnerPool) },
+      { keys: ['辣', '麻辣', '川菜', '湘菜', '重口味', '过瘾'], reply: () => randomPick(spicyPool) },
+      { keys: ['简单', '快手', '方便', '懒', '快速', '省事', '随便'], reply: () => randomPick(quickPool) },
+      { keys: ['深夜', '夜宵', '宵夜', '半夜', '馋了'], reply: () => randomPick(lateNightPool) },
+      { keys: ['面', '面条', '米线', '粉', '拌面', '汤面'], reply: '面食党看这里 🍜：① 兰州牛肉面，汤清面筋道；② 重庆小面，麻辣鲜香一碗入魂；③ 武汉热干面，芝麻酱拌开配酸豆角；④ 柳州螺蛳粉，酸笋越臭越过瘾；⑤ 日式豚骨拉面，浓白汤底配溏心蛋。想吃哪种？' },
+      { keys: ['米饭', '盖饭', '炒饭', '拌饭', '下饭'], reply: '米饭星人 🍚：① 台式卤肉饭，五花肉丁卤到入口即化；② 韩式石锅拌饭，锅巴脆蔬菜多；③ 日式牛丼，肥牛洋葱甜咸下饭；④ 海南鸡饭，嫩鸡蘸姜葱油碟，鸡油饭是本体。' },
+      { keys: ['火锅', '涮', '锅底'], reply: '火锅江湖 🍲：川渝牛油麻辣锅、潮汕牛肉清汤锅、北京铜锅涮羊肉、贵州酸汤鱼火锅、海南椰子鸡火锅。冬天重庆老火锅，夏天潮汕牛肉锅，换着来不腻。' },
+      { keys: ['甜', '甜品', '糖水', '蛋糕', '冰淇淋', '巧克力'], reply: '甜品时间 🍰：① 广式双皮奶，奶香浓滑冰着吃；② 杨枝甘露，芒果西柚西米神仙组合；③ 提拉米苏，咖啡马斯卡彭一勺入魂；④ 日式抹茶千层，微苦回甘。甜品是另一个胃！' },
+      { keys: ['凉', '夏天', '清爽', '沙拉', '凉拌', '解暑'], reply: '天热来点清爽 🥗：① 东北大拉皮，麻酱拌开酸爽滑溜；② 傣味柠檬鸡，酸辣清香入魂；③ 日式冷荞麦面，蘸汁冰凉；④ 越南春卷，虾仁香草蘸鱼露绝了。' },
+      { keys: ['汤', '暖', '冬天', '滋补', '煲汤', '炖'], reply: '喝汤暖身 🥣：① 广式老火靓汤，玉米胡萝卜排骨清甜滋润；② 江西瓦罐汤，小盅慢煨；③ 韩式参鸡汤，整鸡塞糯米人参；④ 日式味噌汤，简单快手。' },
+      { keys: ['喝什么', '喝啥', '饮品', '饮料', '奶茶', '咖啡', '酒', '茶', '推荐喝的', '想喝'], reply: () => randomPick(drinkPool) },
+      { keys: ['去哪玩', '周末', '玩什么', '出去', '活动', '聚会', '约会', '推荐玩的', '有什么玩的', '出游', '出行'], reply: () => randomPick(funPool) },
+      { keys: ['无聊', '找乐子', '推荐', '电影', '剧', '综艺', '游戏', '音乐', '书', '看什么', '听什么', '玩什么游戏'], reply: () => randomPick(boredPool) },
+      { keys: ['你是什么', '身份', '谁', '介绍'], reply: '我是鱼乐喵 🐱！一个吃喝玩乐全能的数字分身。不知道吃啥、喝啥、去哪玩、看什么？告诉我心情或偏好，我还你一个靠谱推荐！' },
+      { keys: ['你好', '嗨', 'hi', 'hello', '在吗'], reply: '嗨！我是鱼乐喵的数字分身 🐱～吃喝玩乐尽管问！吃啥、喝啥、去哪玩、看什么……你告诉我想法，我来安排！🎉' }
+    ];
+
+    const fallback = '这个问题我还得再修炼一下 😅。不过你可以试试问我：吃啥、喝啥、去哪玩、周末怎么过、无聊了看什么……吃喝玩乐尽管问！';
+
+    function matchReply(input) {
+      const text = input.toLowerCase();
+      for (const item of knowledge) {
+        if (item.keys.some(k => text.includes(k))) {
+          const reply = item.reply;
+          return typeof reply === 'function' ? reply() : reply;
+        }
+      }
+      return fallback;
+    }
+
+    /* ===== 聊天交互 ===== */
+    const messagesEl = document.getElementById('chatMessages');
+    const sendBtn = document.getElementById('sendBtn');
+    const chatInput = document.getElementById('chatInput');
+
+    function addMessage(text, type) {
+      const div = document.createElement('div');
+      div.className = 'msg ' + type;
+      if (type === 'bot') {
+        div.innerHTML = '<div class="sender">鱼乐喵</div>' + text;
+      } else {
+        div.innerHTML = '<div class="sender">你</div>' + text;
+      }
+      messagesEl.appendChild(div);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function handleSend(text) {
+      const q = text.trim();
+      if (!q || q.length > 200) return;
+      addMessage(q, 'user');
+      chatInput.value = '';
+      setTimeout(() => {
+        addMessage(matchReply(q), 'bot');
+      }, 400 + Math.random() * 400);
+    }
+
+    sendBtn.addEventListener('click', () => handleSend(chatInput.value));
+    chatInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') handleSend(chatInput.value);
+    });
+
+    /* ===== 快捷提问 ===== */
+    document.querySelectorAll('.quick-chip').forEach(chip => {
+      chip.addEventListener('click', () => handleSend(chip.dataset.q));
+    });
+
+    /* ===== 右侧搜索 ===== */
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+
+    function doSearch() {
+      const q = searchInput.value.trim();
+      if (!q) return;
+      // 在聊天中触发搜索
+      handleSend(q);
+      // 同时过滤卡片
+      filterCardsBySearch(q);
+      // 移动端关闭侧栏
+      if (window.innerWidth <= 768) closeLeftPanel();
+    }
+
+    searchBtn.addEventListener('click', doSearch);
+    searchInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') doSearch();
+    });
+
+    /* ===== 卡片搜索过滤 ===== */
+    function filterCardsBySearch(query) {
+      const q = query.toLowerCase();
+      const cards = document.querySelectorAll('.gallery-card');
+      let found = false;
+      cards.forEach(card => {
+        const keywords = (card.dataset.keywords || '').toLowerCase();
+        const caption = card.querySelector('.caption')?.textContent?.toLowerCase() || '';
+        if (keywords.includes(q) || caption.includes(q)) {
+          card.style.display = '';
+          found = true;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      // 隐藏空 section
+      document.querySelectorAll('.gallery-section').forEach(section => {
+        const visibleCards = section.querySelectorAll('.gallery-card[style*="display: none"]');
+        const totalCards = section.querySelectorAll('.gallery-card');
+        if (visibleCards.length === totalCards.length) {
+          section.style.display = 'none';
+        } else {
+          section.style.display = '';
+        }
+      });
+
+      return found;
+    }
+
+    /* ===== 分类导航过滤 ===== */
+    const navChips = document.querySelectorAll('.nav-chip');
+
+    navChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        // 更新 active 状态
+        navChips.forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+
+        const filter = chip.dataset.filter;
+
+        // 重置搜索
+        searchInput.value = '';
+        document.querySelectorAll('.gallery-card').forEach(card => {
+          card.style.display = '';
+        });
+
+        if (filter === 'all') {
+          document.querySelectorAll('.gallery-section').forEach(s => s.style.display = '');
+        } else {
+          document.querySelectorAll('.gallery-section').forEach(section => {
+            if (section.dataset.category === filter) {
+              section.style.display = '';
+            } else {
+              section.style.display = 'none';
+            }
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
