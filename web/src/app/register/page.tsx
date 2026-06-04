@@ -68,7 +68,7 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: 'center',
     justifyContent: 'center',
     background: 'linear-gradient(145deg, #fdfaf4, #f7efe0)',
-    fontFamily: "'Source Sans 3', sans-serif",
+    fontFamily: "var(--font-source-sans), sans-serif",
   },
   card: {
     background: '#fff',
@@ -80,7 +80,7 @@ const styles: Record<string, React.CSSProperties> = {
     textAlign: 'center' as const,
   },
   title: {
-    fontFamily: "'Playfair Display', serif",
+    fontFamily: "var(--font-playfair), serif",
     fontSize: 32,
     color: '#2d1a0e',
     marginBottom: 8,
@@ -101,7 +101,7 @@ const styles: Record<string, React.CSSProperties> = {
     border: '1px solid #e5d5c0',
     fontSize: 15,
     outline: 'none',
-    fontFamily: "'Source Sans 3', sans-serif",
+    fontFamily: "var(--font-source-sans), sans-serif",
   },
   btn: {
     marginTop: 8,
@@ -113,7 +113,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 16,
     fontWeight: 600,
     cursor: 'pointer',
-    fontFamily: "'Source Sans 3', sans-serif",
+    fontFamily: "var(--font-source-sans), sans-serif",
   },
   error: {
     color: '#c0392b',

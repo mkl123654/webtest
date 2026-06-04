@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Source+Sans+3:wght@400;500;600&display=swap');
-
 /* ===== Reset & Base ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -20,7 +18,7 @@
 }
 
 body {
-  font-family: 'Source Sans 3', -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-family: var(--font-source-sans), "PingFang SC", "Microsoft YaHei", sans-serif;
   background: var(--parchment);
   color: var(--ink);
   line-height: 1.6;
@@ -114,7 +112,7 @@ body::before {
 }
 
 .profile-name {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-playfair), serif;
   font-size: 26px;
   font-weight: 700;
   color: var(--ink);
@@ -268,7 +266,7 @@ body::before {
   font-size: 13px;
   color: var(--taupe);
   transition: transform .3s ease;
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-playfair), serif;
 }
 
 .nav-tab.active .tab-arrow {
@@ -305,7 +303,7 @@ body::before {
 }
 
 .tab-panel-header h2 {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-playfair), serif;
   font-size: 32px;
   font-weight: 700;
   color: var(--ink);
@@ -348,7 +346,7 @@ body::before {
   background: transparent;
   color: var(--ink);
   min-width: 0;
-  font-family: 'Source Sans 3', sans-serif;
+  font-family: var(--font-source-sans), sans-serif;
 }
 
 .tab-search input::placeholder { color: var(--taupe); }
@@ -365,7 +363,7 @@ body::before {
   white-space: nowrap;
   flex-shrink: 0;
   font-weight: 500;
-  font-family: 'Source Sans 3', sans-serif;
+  font-family: var(--font-source-sans), sans-serif;
 }
 
 .tab-search button:hover { filter: brightness(1.1); }
@@ -376,7 +374,7 @@ body::before {
 }
 
 .section-title {
-  font-family: 'Playfair Display', serif;
+  font-family: var(--font-playfair), serif;
   font-size: 20px;
   font-weight: 600;
   color: var(--ink);
@@ -499,7 +497,7 @@ body::before {
   box-shadow: 0 8px 32px rgba(45,26,14,.25);
   transition: all .3s cubic-bezier(.34,1.56,.64,1);
   white-space: nowrap;
-  font-family: 'Source Sans 3', sans-serif;
+  font-family: var(--font-source-sans), sans-serif;
   letter-spacing: 0.3px;
 }
 
@@ -662,7 +660,7 @@ body::before {
   cursor: pointer;
   transition: all .2s ease;
   white-space: nowrap;
-  font-family: 'Source Sans 3', sans-serif;
+  font-family: var(--font-source-sans), sans-serif;
 }
 
 .quick-chip:hover {
@@ -690,7 +688,7 @@ body::before {
   transition: border-color .2s, box-shadow .2s;
   background: var(--parchment);
   min-width: 0;
-  font-family: 'Source Sans 3', sans-serif;
+  font-family: var(--font-source-sans), sans-serif;
 }
 
 .chat-popup-input-row input:focus {
@@ -709,7 +707,7 @@ body::before {
   transition: all .2s ease;
   font-weight: 500;
   flex-shrink: 0;
-  font-family: 'Source Sans 3', sans-serif;
+  font-family: var(--font-source-sans), sans-serif;
 }
 
 .chat-popup-input-row button:hover { filter: brightness(1.2); }
