@@ -21,6 +21,7 @@ const sourceSans = Source_Sans_3({
 export const metadata: Metadata = {
   title: '胖喵推荐 · 发现美食旅行乐趣',
   description: '胖喵推荐 - 吃喝玩乐推荐平台',
+  icons: { icon: '/favicon.svg' },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
