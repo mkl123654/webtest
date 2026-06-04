@@ -1,0 +1,12 @@
+packages:
+  - "web"
+  - "server"
+  - "admin"
+  - "packages/*"
+
+onlyBuiltDependencies:
+  - "@prisma/client"
+  - "@prisma/engines"
+  - prisma
+  - sharp
+  - "@nestjs/core"
