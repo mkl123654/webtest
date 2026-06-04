@@ -40,7 +40,14 @@ export class AuthService {
     return this.buildToken(user);
   }
 
-  private buildToken(user: { id: number; username: string; role: string; createdAt: Date }) {
+  private buildToken(user: {
+    id: number;
+    username: string;
+    role: string;
+    avatar: string;
+    bio: string;
+    createdAt: Date;
+  }) {
     const payload = { sub: user.id, username: user.username, role: user.role };
     return {
       accessToken: this.jwtService.sign(payload),
@@ -48,6 +55,8 @@ export class AuthService {
         id: user.id,
         username: user.username,
         role: user.role,
+        avatar: user.avatar,
+        bio: user.bio,
         createdAt: user.createdAt.toISOString(),
       },
     };

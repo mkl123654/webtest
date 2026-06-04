@@ -127,69 +127,80 @@ body::before {
   margin-bottom: 4px;
 }
 
-.profile-hint {
-  display: inline-block;
+/* --- Avatar Dropdown --- */
+.avatar-dropdown {
+  position: absolute;
+  top: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 20px;
+  width: 220px;
+  box-shadow: 0 12px 40px rgba(45,26,14,.18);
+  border: 1px solid var(--border);
+  z-index: 10;
+  text-align: center;
+  animation: fadeSlideIn .25s ease;
+}
+
+.dropdown-avatar {
+  font-size: 48px;
+  margin-bottom: 8px;
+}
+
+.dropdown-name {
+  font-family: var(--font-playfair), serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+
+.dropdown-id {
   font-size: 11px;
-  color: var(--terracotta);
-  cursor: pointer;
-  user-select: none;
-  transition: all .2s;
-  margin-top: 4px;
-  padding: 3px 12px;
-  border-radius: 20px;
-  border: 1px solid transparent;
+  color: var(--taupe);
+  margin-bottom: 8px;
 }
 
-.profile-hint:hover {
-  border-color: var(--border);
-  background: rgba(192,104,64,.05);
+.dropdown-bio {
+  font-size: 13px;
+  color: var(--ink);
+  margin-bottom: 14px;
+  padding: 8px 12px;
+  background: var(--parchment);
+  border-radius: 8px;
+  line-height: 1.4;
 }
 
-/* Expandable info */
-.profile-info-wrap {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height .5s cubic-bezier(.4,0,.2,1), margin-top .35s ease;
-  margin-top: 0;
-}
-
-.profile-info-wrap.open {
-  max-height: 280px;
-  margin-top: 14px;
-}
-
-.profile-info-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+.dropdown-actions {
+  display: flex;
   gap: 8px;
 }
 
-.info-chip {
-  background: var(--surface);
-  border-radius: var(--radius-sm);
-  padding: 12px 14px;
+.dropdown-btn {
+  flex: 1;
+  padding: 8px 0;
+  border-radius: 10px;
   border: 1px solid var(--border);
-  text-align: left;
-  transition: box-shadow .2s;
-}
-
-.info-chip:hover {
-  box-shadow: var(--shadow-sm);
-}
-
-.info-chip .label {
-  font-size: 10px;
-  color: var(--taupe);
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  margin-bottom: 3px;
-  font-weight: 500;
-}
-
-.info-chip .value {
   font-size: 13px;
-  font-weight: 500;
+  cursor: pointer;
+  transition: all .2s;
+  font-family: var(--font-source-sans), sans-serif;
+  background: var(--surface);
   color: var(--ink);
+}
+
+.dropdown-btn.settings:hover {
+  background: var(--parchment);
+  border-color: var(--terracotta);
+  color: var(--terracotta);
+}
+
+.dropdown-btn.logout:hover {
+  background: #fef2f2;
+  border-color: #ef4444;
+  color: #ef4444;
 }
 
 /* --- Nav Tabs --- */

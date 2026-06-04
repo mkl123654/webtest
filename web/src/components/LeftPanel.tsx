@@ -1,6 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/useAuth';
 
 interface Props {
   activeTab: 'food' | 'travel' | 'fun';
@@ -8,45 +10,67 @@ interface Props {
 }
 
 export function LeftPanel({ activeTab, onTabChange }: Props) {
-  const [infoOpen, setInfoOpen] = useState(true);
+  const { user, logout } = useAuth();
+  const router = useRouter();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // 点击外部关闭下拉
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    if (dropdownOpen) document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [dropdownOpen]);
+
+  const handleLogout = () => {
+    logout();
+    router.push('/login');
+  };
 
   return (
     <aside className="left-panel" id="leftPanel">
       {/* 个人信息 */}
       <div className="profile-section">
-        <div className="avatar-wrap">
-          <div className="avatar-main">🐱</div>
-          <div className="avatar-status" />
-        </div>
-        <div className="profile-name">胖喵</div>
-        <div className="profile-tagline">前端开发者 · AI 数字分身</div>
-        <span
-          className="profile-hint"
-          onClick={() => setInfoOpen(!infoOpen)}
-        >
-          {infoOpen ? '▴ 收起信息' : '▾ 更多信息'}
-        </span>
-
-        <div className={`profile-info-wrap ${infoOpen ? 'open' : ''}`}>
-          <div className="profile-info-grid">
-            <div className="info-chip">
-              <div className="label">身份</div>
-              <div className="value">前端开发者 · 页面构建</div>
-            </div>
-            <div className="info-chip">
-              <div className="label">状态</div>
-              <div className="value">🟢 在线，AI 驱动中</div>
-            </div>
-            <div className="info-chip">
-              <div className="label">技术方向</div>
-              <div className="value">HTML · CSS · JavaScript</div>
-            </div>
-            <div className="info-chip">
-              <div className="label">联系方式</div>
-              <div className="value">hello@pangmiao.dev</div>
-            </div>
+        <div className="avatar-wrap" ref={dropdownRef}>
+          <div
+            className="avatar-main"
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+            style={{ cursor: 'pointer' }}
+          >
+            {user?.avatar || '🐱'}
           </div>
+          <div className="avatar-status" />
+
+          {/* 下拉卡片 */}
+          {dropdownOpen && (
+            <div className="avatar-dropdown">
+              <div className="dropdown-avatar">{user?.avatar || '🐱'}</div>
+              <div className="dropdown-name">{user?.username}</div>
+              <div className="dropdown-id">ID: {user?.id}</div>
+              <div className="dropdown-bio">{user?.bio || '这个人很懒，什么都没写…'}</div>
+              <div className="dropdown-actions">
+                <button
+                  className="dropdown-btn settings"
+                  onClick={() => {
+                    setDropdownOpen(false);
+                    router.push('/settings');
+                  }}
+                >
+                  ⚙️ 设置
+                </button>
+                <button className="dropdown-btn logout" onClick={handleLogout}>
+                  🚪 退出
+                </button>
+              </div>
+            </div>
+          )}
         </div>
+        <div className="profile-name">{user?.username || '胖喵'}</div>
+        <div className="profile-tagline">吃货 · 旅行达人</div>
       </div>
 
       {/* 导航Tab */}

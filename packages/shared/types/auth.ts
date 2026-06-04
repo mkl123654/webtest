@@ -17,5 +17,18 @@ export interface UserInfo {
   id: number;
   username: string;
   role: 'USER' | 'ADMIN';
+  avatar: string;
+  bio: string;
   createdAt: string;
+}
+
+export interface UpdateProfileDto {
+  username?: string;
+  avatar?: string;
+  bio?: string;
+}
+
+export interface ChangePasswordDto {
+  oldPassword: string;
+  newPassword: string;
 }

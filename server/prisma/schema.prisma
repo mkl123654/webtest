@@ -12,6 +12,8 @@ model User {
   username  String   @unique @db.VarChar(50)
   password  String   @db.VarChar(255)
   role      String   @default("USER") @db.VarChar(10)
+  avatar    String   @default("🐱") @db.VarChar(10)
+  bio       String   @default("") @db.VarChar(200)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
