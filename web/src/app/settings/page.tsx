@@ -239,8 +239,8 @@ const styles: Record<string, React.CSSProperties> = {
     transition: 'all .2s',
   },
   avatarOptionActive: {
-    borderColor: '#c06840',
     background: '#fef5ee',
+    border: '2px solid #c06840',
   },
   input: {
     width: '100%',
