@@ -74,4 +74,18 @@ export class UsersService {
       data: { password: hashed },
     });
   }
+
+  async findAll() {
+    return this.prisma.user.findMany({
+      select: {
+        id: true,
+        username: true,
+        role: true,
+        avatar: true,
+        bio: true,
+        createdAt: true,
+      },
+      orderBy: { id: 'desc' },
+    });
+  }
 }

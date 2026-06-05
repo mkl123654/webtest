@@ -1,5 +1,6 @@
 import { Controller, Get, Put, Body, UseGuards, Request } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { AdminGuard } from '../posts/admin.guard';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -29,5 +30,16 @@ export class UsersController {
   ) {
     await this.usersService.changePassword(req.user.id, body.oldPassword, body.newPassword);
     return { message: '密码修改成功' };
+  }
+}
+
+@Controller('admin/users')
+@UseGuards(AdminGuard)
+export class AdminUsersController {
+  constructor(private usersService: UsersService) {}
+
+  @Get()
+  async list() {
+    return this.usersService.findAll();
   }
 }

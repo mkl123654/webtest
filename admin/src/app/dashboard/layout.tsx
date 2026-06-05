@@ -1,12 +1,13 @@
 'use client';
 
 import { useAuth } from '@/hooks/useAuth';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { user, loading, logout } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (!loading && !user) router.push('/login');
@@ -15,14 +16,25 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (loading) return <div style={{ padding: 40, color: '#b8a088' }}>加载中…</div>;
   if (!user) return null;
 
+  const navActive = (href: string) => pathname === href || pathname?.startsWith(href + '/');
+
   return (
     <div style={{ display: 'flex', minHeight: '100vh' }}>
       <aside style={styles.sidebar}>
         <h2 style={styles.logo}>🐱 胖喵后台</h2>
         <nav style={styles.nav}>
-          <a href="/dashboard" style={styles.navItem}>📊 仪表盘</a>
-          <a href="/posts" style={{ ...styles.navItem, opacity: 0.5, cursor: 'default' }}>📝 内容审核（开发中）</a>
-          <a href="/users" style={{ ...styles.navItem, opacity: 0.5, cursor: 'default' }}>👥 用户管理（开发中）</a>
+          <a href="/dashboard" style={{
+            ...styles.navItem,
+            ...(navActive('/dashboard') && !navActive('/dashboard/posts') && !navActive('/dashboard/users') ? styles.navItemActive : {}),
+          }}>📊 仪表盘</a>
+          <a href="/dashboard/posts" style={{
+            ...styles.navItem,
+            ...(navActive('/dashboard/posts') ? styles.navItemActive : {}),
+          }}>📝 内容管理</a>
+          <a href="/dashboard/users" style={{
+            ...styles.navItem,
+            ...(navActive('/dashboard/users') ? styles.navItemActive : {}),
+          }}>👥 用户管理</a>
         </nav>
         <button
           onClick={() => { logout(); router.push('/login'); }}
@@ -54,8 +66,14 @@ const styles: Record<string, React.CSSProperties> = {
     color: '#e5d5c0',
     textDecoration: 'none',
     fontSize: 14,
+    transition: 'all .2s',
   },
-  main: { flex: 1, padding: '32px 40px', overflowY: 'auto' },
+  navItemActive: {
+    background: 'rgba(255,255,255,.12)',
+    color: '#fff',
+    fontWeight: 600,
+  },
+  main: { flex: 1, padding: '32px 40px', overflowY: 'auto', background: '#fdfaf6' },
   logoutBtn: {
     margin: '12px',
     padding: '8px 16px',

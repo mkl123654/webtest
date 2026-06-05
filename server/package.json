@@ -9,7 +9,8 @@
     "lint": "eslint src/",
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
-    "db:push": "prisma db push"
+    "db:push": "prisma db push",
+    "db:seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.0",
@@ -25,6 +26,9 @@
     "bcryptjs": "^2.4.3",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.0"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.0",
