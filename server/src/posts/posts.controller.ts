@@ -57,8 +57,11 @@ export class SectionsController {
   constructor(private postsService: PostsService) {}
 
   @Get()
-  async list(@Query('category') category?: string) {
-    return this.postsService.findAllSections(category);
+  async list(
+    @Query('category') category?: string,
+    @Query('keyword') keyword?: string,
+  ) {
+    return this.postsService.findAllSections(category, keyword);
   }
 }
 
@@ -79,12 +82,7 @@ export class PostsController {
     });
   }
 
-  @Get(':id')
-  async getOne(@Param('id', ParseIntPipe) id: number) {
-    return this.postsService.findPostDetail(id);
-  }
-
-  // ===== 评论 =====
+  // ===== 评论（必须在 :id 之前注册，避免路由冲突）=====
 
   @Get(':id/comments')
   async comments(@Param('id', ParseIntPipe) id: number) {
@@ -105,7 +103,7 @@ export class PostsController {
     });
   }
 
-  // ===== 评分 =====
+  // ===== 评分（必须在 :id 之前）=====
 
   @UseGuards(JwtAuthGuard)
   @Post(':id/rate')
@@ -124,6 +122,13 @@ export class PostsController {
     @Request() req: any,
   ) {
     return this.postsService.getUserRating(id, req.user.id);
+  }
+
+  // ===== 详情（:id 必须放最后，否则会拦截上面的子路由）=====
+
+  @Get(':id')
+  async getOne(@Param('id', ParseIntPipe) id: number) {
+    return this.postsService.findPostDetail(id);
   }
 }
 
