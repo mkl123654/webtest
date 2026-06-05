@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -64,6 +64,40 @@ export class PostsService {
     return post;
   }
 
+  async findPostDetail(id: number) {
+    const post = await this.prisma.post.findUnique({
+      where: { id },
+      include: {
+        section: true,
+        comments: {
+          orderBy: { createdAt: 'asc' },
+          include: {
+            user: { select: { id: true, username: true, avatar: true } },
+          },
+        },
+      },
+    });
+    if (!post) throw new NotFoundException('卡片不存在');
+
+    // Build comment tree
+    const commentMap = new Map<number, any>();
+    const roots: any[] = [];
+
+    for (const c of post.comments) {
+      commentMap.set(c.id, { ...c, replies: [] });
+    }
+    for (const c of commentMap.values()) {
+      if (c.parentId && commentMap.has(c.parentId)) {
+        commentMap.get(c.parentId).replies.push(c);
+      } else {
+        roots.push(c);
+      }
+    }
+
+    const { comments, ...postData } = post;
+    return { ...postData, comments: roots };
+  }
+
   async createPost(data: {
     title: string;
     description: string;
@@ -72,6 +106,8 @@ export class PostsService {
     sectionId: number;
     published?: boolean;
     sortOrder?: number;
+    content?: string;
+    images?: string;
   }) {
     return this.prisma.post.create({
       data,
@@ -89,6 +125,8 @@ export class PostsService {
       sectionId?: number;
       published?: boolean;
       sortOrder?: number;
+      content?: string;
+      images?: string;
     },
   ) {
     await this.findPostById(id);
@@ -111,6 +149,66 @@ export class PostsService {
       data: { published: !post.published },
       include: { section: true },
     });
+  }
+
+  // ========== Comments ==========
+
+  async createComment(postId: number, userId: number, data: { content: string; parentId?: number }) {
+    await this.findPostById(postId);
+    if (data.parentId) {
+      const parent = await this.prisma.comment.findUnique({ where: { id: data.parentId } });
+      if (!parent || parent.postId !== postId) throw new NotFoundException('父评论不存在');
+    }
+    return this.prisma.comment.create({
+      data: { content: data.content, postId, userId, parentId: data.parentId || null },
+      include: { user: { select: { id: true, username: true, avatar: true } } },
+    });
+  }
+
+  async deleteComment(id: number, userId: number) {
+    const comment = await this.prisma.comment.findUnique({ where: { id } });
+    if (!comment) throw new NotFoundException('评论不存在');
+    if (comment.userId !== userId) throw new ForbiddenException('只能删除自己的评论');
+    return this.prisma.comment.delete({ where: { id } });
+  }
+
+  // ========== Ratings ==========
+
+  async ratePost(postId: number, userId: number, score: number) {
+    if (score < 1 || score > 5 || !Number.isInteger(score)) {
+      throw new ForbiddenException('评分必须在 1-5 之间');
+    }
+    await this.findPostById(postId);
+
+    await this.prisma.rating.upsert({
+      where: { postId_userId: { postId, userId } },
+      create: { postId, userId, score },
+      update: { score },
+    });
+
+    // Recalculate average
+    const agg = await this.prisma.rating.aggregate({
+      where: { postId },
+      _avg: { score: true },
+      _count: true,
+    });
+
+    await this.prisma.post.update({
+      where: { id: postId },
+      data: {
+        ratingAvg: agg._avg.score || 0,
+        ratingCount: agg._count,
+      },
+    });
+
+    return { ratingAvg: agg._avg.score || 0, ratingCount: agg._count };
+  }
+
+  async getUserRating(postId: number, userId: number) {
+    const rating = await this.prisma.rating.findUnique({
+      where: { postId_userId: { postId, userId } },
+    });
+    return rating ? { score: rating.score } : { score: 0 };
   }
 
   // ========== Stats ==========

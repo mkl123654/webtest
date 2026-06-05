@@ -1,14 +1,18 @@
+import Link from 'next/link';
+
 interface Props {
   badge: string;
   emoji: string;
   name: string;
   desc: string;
   index: number;
+  postId: number;
+  category: string;
 }
 
-export function GalleryCard({ badge, emoji, name, desc, index }: Props) {
+export function GalleryCard({ badge, emoji, name, desc, index, postId, category }: Props) {
   return (
-    <div className="gallery-card">
+    <Link href={`/${category}/${postId}`} className="gallery-card" style={{ textDecoration: 'none' }}>
       <div className="img" style={{ '--i': index } as React.CSSProperties}>
         <span className="badge">{badge}</span>
         {emoji}
@@ -17,6 +21,6 @@ export function GalleryCard({ badge, emoji, name, desc, index }: Props) {
         {name}
         <small>{desc}</small>
       </div>
-    </div>
+    </Link>
   );
 }

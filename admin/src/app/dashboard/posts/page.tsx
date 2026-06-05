@@ -17,6 +17,8 @@ interface Post {
   description: string;
   emoji: string;
   badge: string;
+  content?: string | null;
+  images?: string | null;
   published: boolean;
   sortOrder: number;
   sectionId: number;
@@ -44,8 +46,10 @@ export default function PostsPage() {
   // Form states
   const [form, setForm] = useState({
     title: '', description: '', emoji: '🍽️', badge: '推荐', sectionId: 0, published: true, sortOrder: 0,
+    content: '', images: '[]',
   });
   const [sectionForm, setSectionForm] = useState({ title: '', category: 'food' as string, sortOrder: 0 });
+  const [uploading, setUploading] = useState(false);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -67,13 +71,37 @@ export default function PostsPage() {
 
   // ===== Post handlers =====
   const openCreatePost = (sectionId?: number) => {
-    setForm({ title: '', description: '', emoji: '🍽️', badge: '推荐', sectionId: sectionId || sections[0]?.id || 0, published: true, sortOrder: 0 });
+    setForm({ title: '', description: '', emoji: '🍽️', badge: '推荐', sectionId: sectionId || sections[0]?.id || 0, published: true, sortOrder: 0, content: '', images: '[]' });
     setPostModal({ open: true, sectionId });
   };
 
   const openEditPost = (post: Post) => {
-    setForm({ title: post.title, description: post.description, emoji: post.emoji, badge: post.badge, sectionId: post.sectionId, published: post.published, sortOrder: post.sortOrder });
+    setForm({ title: post.title, description: post.description, emoji: post.emoji, badge: post.badge, sectionId: post.sectionId, published: post.published, sortOrder: post.sortOrder, content: post.content || '', images: post.images || '[]' });
     setPostModal({ open: true, post });
+  };
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const token = localStorage.getItem('token');
+      const res = await fetch('/api/admin/upload', {
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        body: fd,
+      });
+      if (!res.ok) throw new Error('上传失败');
+      const data = await res.json();
+      const current = JSON.parse(form.images || '[]');
+      setForm({ ...form, images: JSON.stringify([...current, data.url]) });
+    } catch (err: any) {
+      alert(err.message || '上传失败');
+    } finally {
+      setUploading(false);
+    }
   };
 
   const savePost = async () => {
@@ -256,6 +284,42 @@ export default function PostsPage() {
                   <option key={s.id} value={s.id}>{s.title} ({s.category})</option>
                 ))}
               </select>
+            </div>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>图文详情</label>
+              <textarea
+                style={{ ...styles.input, height: 100, resize: 'vertical' }}
+                value={form.content}
+                onChange={(e) => setForm({ ...form, content: e.target.value })}
+                placeholder="长文介绍，支持换行…"
+              />
+            </div>
+            <div style={styles.formGroup}>
+              <label style={styles.label}>图片</label>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <label style={{ ...styles.btnOutline, cursor: 'pointer', fontSize: 12, padding: '6px 12px' }}>
+                  {uploading ? '上传中…' : '📷 上传图片'}
+                  <input type="file" accept="image/*" style={{ display: 'none' }} onChange={handleUpload} disabled={uploading} />
+                </label>
+                <span style={{ fontSize: 11, color: '#b8a088' }}>单张不超过 5MB</span>
+              </div>
+              {(JSON.parse(form.images || '[]') as string[]).length > 0 && (
+                <div style={{ display: 'flex', gap: 8, marginTop: 8, flexWrap: 'wrap' }}>
+                  {(JSON.parse(form.images || '[]') as string[]).map((url: string, i: number) => (
+                    <div key={i} style={{ position: 'relative' }}>
+                      <img src={url} alt="" style={{ width: 80, height: 60, borderRadius: 8, objectFit: 'cover' }} />
+                      <button
+                        style={{ position: 'absolute', top: -6, right: -6, width: 20, height: 20, borderRadius: '50%', border: 'none', background: '#ef4444', color: '#fff', fontSize: 12, cursor: 'pointer', lineHeight: 1 }}
+                        onClick={() => {
+                          const images = JSON.parse(form.images || '[]') as string[];
+                          images.splice(i, 1);
+                          setForm({ ...form, images: JSON.stringify(images) });
+                        }}
+                      >×</button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
             <div style={styles.formRow}>
               <div style={styles.formGroup}>

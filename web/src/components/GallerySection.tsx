@@ -5,6 +5,8 @@ interface Item {
   emoji: string;
   name: string;
   desc: string;
+  postId: number;
+  category: string;
 }
 
 interface Props {
@@ -18,7 +20,7 @@ export function GallerySection({ title, items }: Props) {
       <h3 className="section-title">{title}</h3>
       <div className="gallery">
         {items.map((item, i) => (
-          <GalleryCard key={i} {...item} index={i} />
+          <GalleryCard key={item.postId} {...item} index={i} />
         ))}
       </div>
     </div>

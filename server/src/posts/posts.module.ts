@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import {
+  UploadController,
   SectionsController,
   PostsController,
+  CommentController,
   AdminSectionsController,
   AdminPostsController,
   AdminStatsController,
@@ -11,8 +13,10 @@ import { AdminGuard } from './admin.guard';
 
 @Module({
   controllers: [
+    UploadController,
     SectionsController,
     PostsController,
+    CommentController,
     AdminSectionsController,
     AdminPostsController,
     AdminStatsController,

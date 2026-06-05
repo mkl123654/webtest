@@ -64,6 +64,8 @@ export function RightPanel({ activeTab }: Props) {
               emoji: p.emoji,
               name: p.title,
               desc: p.description,
+              postId: p.id,
+              category: section.category,
             }))}
           />
         ))}
