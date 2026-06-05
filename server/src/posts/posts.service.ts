@@ -7,29 +7,34 @@ export class PostsService {
 
   // ========== Sections ==========
 
-  async findAllSections(category?: string, search?: string) {
-    const kw = search?.trim();
-    const sections = await this.prisma.section.findMany({
+  async findAllSections(category?: string) {
+    return this.prisma.section.findMany({
       where: category ? { category } : undefined,
       orderBy: { sortOrder: 'asc' },
       include: {
         posts: {
-          where: {
-            published: true,
-            ...(kw ? {
-              OR: [
-                { title: { contains: kw } },
-                { description: { contains: kw } },
-              ],
-            } : {}),
-          },
+          where: { published: true },
           orderBy: { sortOrder: 'asc' },
         },
       },
     });
-    // 搜索时过滤掉没有匹配卡片的空栏目
-    if (kw) return sections.filter(s => s.posts.length > 0);
-    return sections;
+  }
+
+  async search(q: string, category?: string) {
+    const kw = q?.trim();
+    if (!kw) return [];
+    return this.prisma.post.findMany({
+      where: {
+        published: true,
+        ...(category ? { section: { category } } : {}),
+        OR: [
+          { title: { contains: kw } },
+          { description: { contains: kw } },
+        ],
+      },
+      orderBy: { sortOrder: 'asc' },
+      include: { section: true },
+    });
   }
 
   async createSection(data: { title: string; category: string; sortOrder?: number }) {

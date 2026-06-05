@@ -3,6 +3,7 @@ import { PostsService } from './posts.service';
 import {
   UploadController,
   SectionsController,
+  SearchController,
   PostsController,
   CommentController,
   AdminSectionsController,
@@ -15,6 +16,7 @@ import { AdminGuard } from './admin.guard';
   controllers: [
     UploadController,
     SectionsController,
+    SearchController,
     PostsController,
     CommentController,
     AdminSectionsController,

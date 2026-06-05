@@ -13,6 +13,7 @@ interface PostItem {
   published: boolean;
   sortOrder: number;
   sectionId: number;
+  section?: { id: number; title: string; category: string };
 }
 
 interface SectionData {
@@ -41,33 +42,33 @@ export function RightPanel({ activeTab }: Props) {
   const [searchInput, setSearchInput] = useState('');
   const [searchKeyword, setSearchKeyword] = useState('');
 
+  const [searchResults, setSearchResults] = useState<PostItem[]>([]);
+
   useEffect(() => {
-    const params = new URLSearchParams();
-    // 搜索时不限定分类，实现全局搜索
-    if (!searchKeyword) params.set('category', activeTab);
-    if (searchKeyword) params.set('search', searchKeyword);
-    api.get<SectionData[]>(`/sections?${params.toString()}`)
+    if (searchKeyword) return; // 搜索时由 handleSearch 控制
+    api.get<SectionData[]>(`/sections?category=${activeTab}`)
       .then(setSections)
       .catch(() => setSections([]));
   }, [activeTab, searchKeyword]);
 
   const handleSearch = () => {
-    setSearchKeyword(searchInput.trim());
+    const q = searchInput.trim();
+    if (!q) return;
+    setSearchKeyword(q);
+    api.get<PostItem[]>(`/search?q=${encodeURIComponent(q)}`)
+      .then(setSearchResults)
+      .catch(() => setSearchResults([]));
   };
 
   const handleClear = () => {
     setSearchInput('');
     setSearchKeyword('');
+    setSearchResults([]);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') handleSearch();
   };
-
-  // 搜索模式下合并所有匹配卡片为混合列表
-  const allMatchedPosts = searchKeyword
-    ? sections.flatMap(s => s.posts.map(p => ({ ...p, sectionCategory: s.category, sectionTitle: s.title })))
-    : [];
 
   return (
     <main className="right-panel">
@@ -95,17 +96,16 @@ export function RightPanel({ activeTab }: Props) {
         </div>
 
         {searchKeyword ? (
-          // 全局搜索：混合展示所有匹配卡片
-          allMatchedPosts.length > 0 ? (
+          searchResults.length > 0 ? (
             <GallerySection
-              title={`🔍 搜索结果："${searchKeyword}"（${allMatchedPosts.length} 个）`}
-              items={allMatchedPosts.map(p => ({
+              title={`🔍 搜索结果："${searchKeyword}"（${searchResults.length} 个）`}
+              items={searchResults.map(p => ({
                 badge: p.badge,
                 emoji: p.emoji,
                 name: p.title,
                 desc: p.description,
                 postId: p.id,
-                category: p.sectionCategory,
+                category: p.section?.category || '',
               }))}
             />
           ) : (
@@ -114,7 +114,6 @@ export function RightPanel({ activeTab }: Props) {
             </p>
           )
         ) : (
-          // 正常模式：按栏目分组展示
           sections.map((section) => (
             <GallerySection
               key={section.id}

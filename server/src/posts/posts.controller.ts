@@ -57,11 +57,22 @@ export class SectionsController {
   constructor(private postsService: PostsService) {}
 
   @Get()
-  async list(
+  async list(@Query('category') category?: string) {
+    return this.postsService.findAllSections(category);
+  }
+}
+
+@Controller('search')
+export class SearchController {
+  constructor(private postsService: PostsService) {}
+
+  @Get()
+  async search(
+    @Query('q') q?: string,
     @Query('category') category?: string,
-    @Query('search') search?: string,
   ) {
-    return this.postsService.findAllSections(category, search);
+    if (!q?.trim()) return [];
+    return this.postsService.search(q, category);
   }
 }
 
