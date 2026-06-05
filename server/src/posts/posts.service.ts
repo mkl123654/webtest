@@ -7,8 +7,8 @@ export class PostsService {
 
   // ========== Sections ==========
 
-  async findAllSections(category?: string, keyword?: string) {
-    const kw = keyword?.trim();
+  async findAllSections(category?: string, search?: string) {
+    const kw = search?.trim();
     const sections = await this.prisma.section.findMany({
       where: category ? { category } : undefined,
       orderBy: { sortOrder: 'asc' },

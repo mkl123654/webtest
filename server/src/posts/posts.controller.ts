@@ -59,9 +59,9 @@ export class SectionsController {
   @Get()
   async list(
     @Query('category') category?: string,
-    @Query('keyword') keyword?: string,
+    @Query('search') search?: string,
   ) {
-    return this.postsService.findAllSections(category, keyword);
+    return this.postsService.findAllSections(category, search);
   }
 }
 

@@ -45,7 +45,7 @@ export function RightPanel({ activeTab }: Props) {
     const params = new URLSearchParams();
     // 搜索时不限定分类，实现全局搜索
     if (!searchKeyword) params.set('category', activeTab);
-    if (searchKeyword) params.set('keyword', searchKeyword);
+    if (searchKeyword) params.set('search', searchKeyword);
     api.get<SectionData[]>(`/sections?${params.toString()}`)
       .then(setSections)
       .catch(() => setSections([]));
