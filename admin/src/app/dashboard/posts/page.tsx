@@ -401,7 +401,7 @@ const styles: Record<string, React.CSSProperties> = {
     padding: '6px 16px', borderRadius: 20, border: '1px solid #e5d5c0', background: '#fff',
     fontSize: 13, cursor: 'pointer', color: '#b8a088', fontFamily: "'Source Sans 3', sans-serif",
   },
-  filterBtnActive: { background: '#c06840', color: '#fff', borderColor: '#c06840' },
+  filterBtnActive: { background: '#c06840', color: '#fff', border: '1px solid #c06840' },
   sectionBlock: { marginBottom: 28 },
   sectionHeader: {
     display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12,
