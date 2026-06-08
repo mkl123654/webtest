@@ -30,7 +30,7 @@ export default function Home() {
 
   return (
     <div className="app">
-      <LeftPanel activeTab={activeTab} onTabChange={setActiveTab} />
+      <LeftPanel />
       <RightPanel activeTab={activeTab} />
       <ChatFloat />
     </div>

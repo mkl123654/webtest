@@ -1,21 +1,17 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
+import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
 
-interface Props {
-  activeTab: 'food' | 'travel' | 'fun';
-  onTabChange: (tab: 'food' | 'travel' | 'fun') => void;
-}
-
-export function LeftPanel({ activeTab, onTabChange }: Props) {
+export function LeftPanel() {
   const { user, logout } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // 点击外部关闭下拉
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -31,9 +27,14 @@ export function LeftPanel({ activeTab, onTabChange }: Props) {
     router.push('/login');
   };
 
+  const isActive = (path: string) => {
+    if (path === '/') return pathname === '/';
+    return pathname.startsWith(path);
+  };
+
   return (
     <aside className="left-panel" id="leftPanel">
-      {/* 个人信息 */}
+      {/* Profile section — unchanged */}
       <div className="profile-section">
         <div className="avatar-wrap" ref={dropdownRef}>
           <div
@@ -45,7 +46,6 @@ export function LeftPanel({ activeTab, onTabChange }: Props) {
           </div>
           <div className="avatar-status" />
 
-          {/* 下拉卡片 */}
           {dropdownOpen && (
             <div className="avatar-dropdown">
               <div className="dropdown-avatar">{user?.avatar || '🐱'}</div>
@@ -53,15 +53,6 @@ export function LeftPanel({ activeTab, onTabChange }: Props) {
               <div className="dropdown-id">ID: {user?.id}</div>
               <div className="dropdown-bio">{user?.bio || '这个人很懒，什么都没写…'}</div>
               <div className="dropdown-actions">
-                <button
-                  className="dropdown-btn settings"
-                  onClick={() => {
-                    setDropdownOpen(false);
-                    router.push('/settings');
-                  }}
-                >
-                  ⚙️ 设置
-                </button>
                 <button className="dropdown-btn logout" onClick={handleLogout}>
                   🚪 退出
                 </button>
@@ -73,30 +64,32 @@ export function LeftPanel({ activeTab, onTabChange }: Props) {
         <div className="profile-tagline">吃货 · 旅行达人</div>
       </div>
 
-      {/* 导航Tab */}
+      {/* Nav menu — replaced 3 category tabs with 3 feature links, removed label */}
       <nav className="nav-tabs">
-        <div className="nav-tabs-label">📂 推荐分类</div>
-        <button
-          className={`nav-tab ${activeTab === 'food' ? 'active' : ''}`}
-          onClick={() => onTabChange('food')}
+        <Link
+          href="/"
+          className={`nav-tab ${isActive('/') ? 'active' : ''}`}
+          style={{ textDecoration: 'none' }}
         >
-          <span className="tab-icon">🍽️</span> 美食推荐
+          <span className="tab-icon">🐱</span> 胖喵推荐
           <span className="tab-arrow">→</span>
-        </button>
-        <button
-          className={`nav-tab ${activeTab === 'travel' ? 'active' : ''}`}
-          onClick={() => onTabChange('travel')}
+        </Link>
+        <Link
+          href="/favorites"
+          className={`nav-tab ${isActive('/favorites') ? 'active' : ''}`}
+          style={{ textDecoration: 'none' }}
         >
-          <span className="tab-icon">✈️</span> 旅游推荐
+          <span className="tab-icon">⭐</span> 个人收藏
           <span className="tab-arrow">→</span>
-        </button>
-        <button
-          className={`nav-tab ${activeTab === 'fun' ? 'active' : ''}`}
-          onClick={() => onTabChange('fun')}
+        </Link>
+        <Link
+          href="/settings"
+          className={`nav-tab ${isActive('/settings') ? 'active' : ''}`}
+          style={{ textDecoration: 'none' }}
         >
-          <span className="tab-icon">🎮</span> 游玩推荐
+          <span className="tab-icon">⚙️</span> 个人设置
           <span className="tab-arrow">→</span>
-        </button>
+        </Link>
       </nav>
     </aside>
   );
