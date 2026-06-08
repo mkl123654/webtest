@@ -1,17 +1,17 @@
 import { GalleryCard } from './GalleryCard';
 
-interface Item {
-  badge: string;
-  emoji: string;
-  name: string;
-  desc: string;
-  postId: number;
-  category: string;
-}
-
 interface Props {
   title: string;
-  items: Item[];
+  items: {
+    badge: string;
+    emoji: string;
+    name: string;
+    desc: string;
+    postId: number;
+    category: string;
+    isFavorited?: boolean;
+    favoriteId?: number;
+  }[];
 }
 
 export function GallerySection({ title, items }: Props) {
@@ -20,7 +20,18 @@ export function GallerySection({ title, items }: Props) {
       <h3 className="section-title">{title}</h3>
       <div className="gallery">
         {items.map((item, i) => (
-          <GalleryCard key={item.postId} {...item} index={i} />
+          <GalleryCard
+            key={item.postId}
+            badge={item.badge}
+            emoji={item.emoji}
+            name={item.name}
+            desc={item.desc}
+            index={i}
+            postId={item.postId}
+            category={item.category}
+            isFavorited={item.isFavorited}
+            favoriteId={item.favoriteId}
+          />
         ))}
       </div>
     </div>
