@@ -18,6 +18,7 @@ model User {
   updatedAt DateTime  @updatedAt
   comments  Comment[]
   ratings   Rating[]
+  favorites Favorite[]
 }
 
 model Section {
@@ -46,6 +47,7 @@ model Post {
   section     Section   @relation(fields: [sectionId], references: [id], onDelete: Cascade)
   comments    Comment[]
   ratings     Rating[]
+  favorites   Favorite[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }
@@ -74,4 +76,16 @@ model Rating {
   createdAt DateTime @default(now())
 
   @@unique([postId, userId])
+}
+
+model Favorite {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  postId    Int
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+  @@index([userId])
 }
