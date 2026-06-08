@@ -805,3 +805,166 @@ body::before {
   .gallery-card .caption { padding: 10px 12px; font-size: 13px; }
   .gallery-card .caption small { font-size: 11px; }
 }
+
+/* ===== Category Tabs (in recommend/favorites page) ===== */
+.category-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 20px 48px 8px;
+  flex-wrap: wrap;
+}
+
+.category-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: 28px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .25s ease;
+  font-family: var(--font-source-sans), sans-serif;
+  white-space: nowrap;
+}
+
+.category-tab:hover {
+  background: rgba(192,104,64,.04);
+  border-color: var(--terracotta);
+  color: var(--terracotta);
+}
+
+.category-tab.active {
+  background: var(--terracotta);
+  color: #fff;
+  border-color: var(--terracotta);
+  box-shadow: 0 4px 16px rgba(192,104,64,.25);
+}
+
+.category-tab-icon {
+  font-size: 18px;
+}
+
+/* ===== Recommend Content ===== */
+.recommend-content {
+  padding: 0;
+}
+
+.recommend-search {
+  padding: 28px 48px 0;
+}
+
+.recommend-body {
+  padding: 0 48px 40px;
+}
+
+/* ===== Favorite Button on cards ===== */
+.fav-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,.85);
+  backdrop-filter: blur(6px);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform .2s ease, background .2s ease;
+  padding: 0;
+  line-height: 1;
+  z-index: 2;
+  box-shadow: 0 2px 8px rgba(45,26,14,.1);
+}
+
+.fav-btn:hover {
+  transform: scale(1.15);
+  background: rgba(255,255,255,.95);
+}
+
+.fav-btn.active {
+  background: rgba(255,255,255,.9);
+}
+
+.fav-btn.pop {
+  animation: favPop .3s cubic-bezier(.34,1.56,.64,1);
+}
+
+@keyframes favPop {
+  0% { transform: scale(0.8); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* ===== Mobile Bottom TabBar ===== */
+.mobile-tabbar {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  z-index: 90;
+  grid-template-columns: repeat(3, 1fr);
+  box-shadow: 0 -2px 12px rgba(45,26,14,.06);
+}
+
+.mobile-tabbar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--taupe);
+  transition: color .2s;
+  font-family: var(--font-source-sans), sans-serif;
+}
+
+.mobile-tabbar-item.active {
+  color: var(--terracotta);
+}
+
+.mobile-tabbar-icon {
+  font-size: 22px;
+}
+
+.mobile-tabbar-label {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* ===== Responsive updates ===== */
+@media (max-width: 1024px) {
+  .recommend-search { padding: 24px 28px 0; }
+  .recommend-body { padding: 0 28px 40px; }
+  .category-tabs { padding: 16px 28px 4px; }
+}
+
+@media (max-width: 768px) {
+  .recommend-search { padding: 16px 16px 0; }
+  .recommend-body { padding: 0 16px 100px; }
+  .category-tabs { padding: 12px 16px 4px; gap: 4px; }
+  .category-tab { padding: 8px 16px; font-size: 13px; }
+  .category-tab-icon { font-size: 16px; }
+  .fav-btn { width: 30px; height: 30px; font-size: 16px; top: 8px; right: 8px; }
+
+  .mobile-tabbar { display: grid; }
+
+  .right-panel { padding: 0 0 60px; }
+
+  .left-panel { display: none !important; }
+  .mobile-menu-btn { display: none !important; }
+}
