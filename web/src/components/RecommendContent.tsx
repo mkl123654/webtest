@@ -26,9 +26,9 @@ interface SectionData {
 }
 
 const TABS = [
-  { key: 'food', icon: '🍽️', label: '美食推荐' },
-  { key: 'travel', icon: '✈️', label: '旅游推荐' },
-  { key: 'fun', icon: '🎮', label: '游玩推荐' },
+  { key: 'food', icon: '🍽️', label: '美食' },
+  { key: 'travel', icon: '✈️', label: '旅游' },
+  { key: 'fun', icon: '🎮', label: '游玩' },
 ] as const;
 
 export function RecommendContent() {
