@@ -12,9 +12,10 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UsersController = void 0;
+exports.AdminUsersController = exports.UsersController = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
+const admin_guard_1 = require("../posts/admin.guard");
 const users_service_1 = require("./users.service");
 let UsersController = class UsersController {
     constructor(usersService) {
@@ -22,6 +23,13 @@ let UsersController = class UsersController {
     }
     async getMe(req) {
         return this.usersService.findById(req.user.id);
+    }
+    async updateMe(req, body) {
+        return this.usersService.updateProfile(req.user.id, body);
+    }
+    async changePassword(req, body) {
+        await this.usersService.changePassword(req.user.id, body.oldPassword, body.newPassword);
+        return { message: '密码修改成功' };
     }
 };
 exports.UsersController = UsersController;
@@ -33,8 +41,46 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "getMe", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Put)('me'),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "updateMe", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Put)('me/password'),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "changePassword", null);
 exports.UsersController = UsersController = __decorate([
     (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [users_service_1.UsersService])
 ], UsersController);
+let AdminUsersController = class AdminUsersController {
+    constructor(usersService) {
+        this.usersService = usersService;
+    }
+    async list() {
+        return this.usersService.findAll();
+    }
+};
+exports.AdminUsersController = AdminUsersController;
+__decorate([
+    (0, common_1.Get)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], AdminUsersController.prototype, "list", null);
+exports.AdminUsersController = AdminUsersController = __decorate([
+    (0, common_1.Controller)('admin/users'),
+    (0, common_1.UseGuards)(admin_guard_1.AdminGuard),
+    __metadata("design:paramtypes", [users_service_1.UsersService])
+], AdminUsersController);
 //# sourceMappingURL=users.controller.js.map

@@ -10,6 +10,8 @@ export declare class AuthController {
             id: number;
             username: string;
             role: string;
+            avatar: string;
+            bio: string;
             createdAt: string;
         };
     }>;
@@ -19,6 +21,8 @@ export declare class AuthController {
             id: number;
             username: string;
             role: string;
+            avatar: string;
+            bio: string;
             createdAt: string;
         };
     }>;

@@ -12,6 +12,8 @@ export declare class AuthService {
             id: number;
             username: string;
             role: string;
+            avatar: string;
+            bio: string;
             createdAt: string;
         };
     }>;
@@ -21,6 +23,8 @@ export declare class AuthService {
             id: number;
             username: string;
             role: string;
+            avatar: string;
+            bio: string;
             createdAt: string;
         };
     }>;

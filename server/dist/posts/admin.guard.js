@@ -6,18 +6,23 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AppModule = void 0;
+exports.AdminGuard = void 0;
 const common_1 = require("@nestjs/common");
-const prisma_module_1 = require("./prisma/prisma.module");
-const auth_module_1 = require("./auth/auth.module");
-const users_module_1 = require("./users/users.module");
-const posts_module_1 = require("./posts/posts.module");
-let AppModule = class AppModule {
+const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
+let AdminGuard = class AdminGuard extends jwt_auth_guard_1.JwtAuthGuard {
+    async canActivate(context) {
+        const authed = await super.canActivate(context);
+        if (!authed)
+            return false;
+        const request = context.switchToHttp().getRequest();
+        if (request.user?.role !== 'ADMIN') {
+            throw new common_1.ForbiddenException('需要管理员权限');
+        }
+        return true;
+    }
 };
-exports.AppModule = AppModule;
-exports.AppModule = AppModule = __decorate([
-    (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule, auth_module_1.AuthModule, users_module_1.UsersModule, posts_module_1.PostsModule],
-    })
-], AppModule);
-//# sourceMappingURL=app.module.js.map
+exports.AdminGuard = AdminGuard;
+exports.AdminGuard = AdminGuard = __decorate([
+    (0, common_1.Injectable)()
+], AdminGuard);
+//# sourceMappingURL=admin.guard.js.map

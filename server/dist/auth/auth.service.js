@@ -82,6 +82,8 @@ let AuthService = class AuthService {
                 id: user.id,
                 username: user.username,
                 role: user.role,
+                avatar: user.avatar,
+                bio: user.bio,
                 createdAt: user.createdAt.toISOString(),
             },
         };

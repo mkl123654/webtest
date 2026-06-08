@@ -12,6 +12,8 @@ const client_1 = require("@prisma/client");
 let PrismaService = class PrismaService extends client_1.PrismaClient {
     async onModuleInit() {
         await this.$connect();
+        // 强制设置连接字符集为 utf8mb4，防止中文乱码
+        await this.$executeRaw `SET NAMES utf8mb4`;
     }
     async onModuleDestroy() {
         await this.$disconnect();
