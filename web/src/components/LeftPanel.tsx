@@ -5,7 +5,12 @@ import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
 
-export function LeftPanel() {
+interface Props {
+  onNavigate?: () => void;
+  className?: string;
+}
+
+export function LeftPanel({ onNavigate, className }: Props) {
   const { user, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -33,7 +38,7 @@ export function LeftPanel() {
   };
 
   return (
-    <aside className="left-panel" id="leftPanel">
+    <aside className={`left-panel ${className || ''}`} id="leftPanel">
       {/* Profile section — unchanged */}
       <div className="profile-section">
         <div className="avatar-wrap" ref={dropdownRef}>
@@ -70,6 +75,7 @@ export function LeftPanel() {
           href="/"
           className={`nav-tab ${isActive('/') ? 'active' : ''}`}
           style={{ textDecoration: 'none' }}
+          onClick={() => onNavigate?.()}
         >
           <span className="tab-icon">🐱</span> 胖喵推荐
           <span className="tab-arrow">→</span>
@@ -78,6 +84,7 @@ export function LeftPanel() {
           href="/favorites"
           className={`nav-tab ${isActive('/favorites') ? 'active' : ''}`}
           style={{ textDecoration: 'none' }}
+          onClick={() => onNavigate?.()}
         >
           <span className="tab-icon">⭐</span> 个人收藏
           <span className="tab-arrow">→</span>
@@ -86,6 +93,7 @@ export function LeftPanel() {
           href="/settings"
           className={`nav-tab ${isActive('/settings') ? 'active' : ''}`}
           style={{ textDecoration: 'none' }}
+          onClick={() => onNavigate?.()}
         >
           <span className="tab-icon">⚙️</span> 个人设置
           <span className="tab-arrow">→</span>

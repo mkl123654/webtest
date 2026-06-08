@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { LeftPanel } from '@/components/LeftPanel';
@@ -40,12 +40,28 @@ function MobileTabBar() {
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
+  // Close drawer on route change
+  const pathname = usePathname();
+  useEffect(() => { setDrawerOpen(false); }, [pathname]);
+
+  // Auth guard
   useEffect(() => {
     if (!loading && !user) {
       router.push('/login');
     }
   }, [user, loading, router]);
+
+  // Lock body scroll when drawer open
+  useEffect(() => {
+    if (drawerOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [drawerOpen]);
 
   if (loading) {
     return (
@@ -59,7 +75,24 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <div className="app">
-      <LeftPanel />
+      {/* Hamburger menu button — visible only on mobile */}
+      <button
+        className="mobile-menu-btn"
+        onClick={() => setDrawerOpen(true)}
+        aria-label="打开菜单"
+      >
+        ☰
+      </button>
+
+      {/* Backdrop overlay */}
+      <div
+        className={`left-panel-overlay ${drawerOpen ? 'show' : ''}`}
+        onClick={() => setDrawerOpen(false)}
+      />
+
+      {/* Left panel — .open class controls mobile drawer */}
+      <LeftPanel onNavigate={() => setDrawerOpen(false)} className={drawerOpen ? 'open' : ''} />
+
       <main className="right-panel">
         {children}
       </main>
