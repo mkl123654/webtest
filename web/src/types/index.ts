@@ -15,4 +15,18 @@ export interface ChatMessage {
   content: string;
 }
 
-export type TabKey = 'food' | 'travel' | 'fun';
+export interface CategoryData {
+  id: number;
+  key: string;
+  label: string;
+  icon: string;
+  sortOrder: number;
+  group: { id: number; key: string; label: string };
+}
+
+export interface CategoryGroupData {
+  id: number;
+  key: string;
+  label: string;
+  categories: CategoryData[];
+}

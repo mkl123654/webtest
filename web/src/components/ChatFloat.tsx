@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 
 const SNAP_DIST = 30;
 const DRAG_THRESHOLD = 5;
@@ -45,6 +45,30 @@ export function ChatFloat() {
   });
   const [dragging, setDragging] = useState(false);
   const [snapping, setSnapping] = useState(false);
+
+  // --- Auto-collapse / retract ---
+  const [retracted, setRetracted] = useState(false);
+  const retractTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const resetRetractTimer = useCallback(() => {
+    setRetracted(false);
+    if (retractTimerRef.current) clearTimeout(retractTimerRef.current);
+    retractTimerRef.current = setTimeout(() => setRetracted(true), 4000);
+  }, []);
+
+  // Start timer on mount
+  useEffect(() => {
+    resetRetractTimer();
+    return () => { if (retractTimerRef.current) clearTimeout(retractTimerRef.current); };
+  }, [resetRetractTimer]);
+
+  // Don't retract when chat open or dragging
+  useEffect(() => {
+    if (open || dragging) {
+      setRetracted(false);
+      if (retractTimerRef.current) clearTimeout(retractTimerRef.current);
+    }
+  }, [open, dragging]);
 
   // Initialize position
   useEffect(() => {
@@ -157,9 +181,11 @@ export function ChatFloat() {
           setPos(snapped);
           savePos(snapped.x, snapped.y);
         }
+        resetRetractTimer();
       } else {
         // Click — toggle chat
         setOpen(prev => !prev);
+        resetRetractTimer();
       }
     };
 
@@ -174,7 +200,7 @@ export function ChatFloat() {
       window.removeEventListener('touchmove', onMove);
       window.removeEventListener('touchend', onUp);
     };
-  }, [snap]);
+  }, [snap, resetRetractTimer]);
 
   // Auto-scroll
   useEffect(() => {
@@ -240,16 +266,22 @@ export function ChatFloat() {
     }
   };
 
-  // Inline style for drag position
-  const dragStyle: React.CSSProperties = pos ? {
-    left: pos.x,
-    top: pos.y,
-    bottom: 'auto',
-  } : {};
+  // Retract offset: hide ~half the button off the nearest edge
+  const retractOffset = useMemo(() => {
+    if (!retracted) return 0;
+    const currentX = pos?.x ?? 0;
+    return currentX < window.innerWidth / 2 ? -22 : 22;
+  }, [retracted, pos]);
+
+  // Inline style for drag position + retract
+  const dragStyle: React.CSSProperties = {
+    ...(pos ? { left: pos.x, top: pos.y, bottom: 'auto' as const } : {}),
+    ...(retractOffset !== 0 ? { transform: `translateX(${retractOffset}px)` } : {}),
+  };
 
   return (
     <div
-      className={`chat-float${dragging ? ' dragging' : ''}${snapping ? ' snapping' : ''}`}
+      className={`chat-float${dragging ? ' dragging' : ''}${snapping ? ' snapping' : ''}${retracted ? ' retracted' : ''}`}
       ref={containerRef}
       style={dragStyle}
     >
@@ -258,6 +290,8 @@ export function ChatFloat() {
         className="chat-toggle-btn"
         onMouseDown={onPointerDown}
         onTouchStart={onPointerDown}
+        onMouseEnter={resetRetractTimer}
+        onMouseLeave={resetRetractTimer}
         onClick={() => {}} // prevent default, handled in onUp
       >
         <span className="toggle-emoji">😼</span>

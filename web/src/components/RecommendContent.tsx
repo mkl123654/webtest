@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { GallerySection } from './GallerySection';
 import { api } from '@/lib/api';
+import type { CategoryGroupData } from '@/types';
 
 interface PostItem {
   id: number;
@@ -13,149 +14,107 @@ interface PostItem {
   badge: string;
   published: boolean;
   sortOrder: number;
-  sectionId: number;
-  section?: { id: number; title: string; category: string };
+  categories?: { category: { id: number; key: string; label: string; group: { key: string; label: string } } }[];
 }
 
-interface SectionData {
-  id: number;
-  title: string;
-  category: string;
-  sortOrder: number;
-  posts: PostItem[];
+interface TabItem {
+  key: string;
+  icon: string;
+  label: string;
 }
-
-const TABS = [
-  { key: 'food', icon: '🍽️', label: '美食' },
-  { key: 'travel', icon: '✈️', label: '旅游' },
-  { key: 'fun', icon: '🎮', label: '游玩' },
-] as const;
 
 export function RecommendContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const tab = (searchParams.get('tab') as 'food' | 'travel' | 'fun') || 'food';
+  const categoriesParam = searchParams.get('categories') || 'food';
 
-  const [sections, setSections] = useState<SectionData[]>([]);
+  const [tabs, setTabs] = useState<TabItem[]>([]);
+  const [posts, setPosts] = useState<PostItem[]>([]);
   const [searchInput, setSearchInput] = useState('');
   const [searchKeyword, setSearchKeyword] = useState('');
   const [searchResults, setSearchResults] = useState<PostItem[]>([]);
 
-  // Load sections for current tab
+  // Load categories for TABS
+  useEffect(() => {
+    api.get<CategoryGroupData[]>('/categories')
+      .then((groups) => {
+        const flat: TabItem[] = [];
+        for (const g of groups) for (const c of g.categories) flat.push({ key: c.key, icon: c.icon, label: c.label });
+        setTabs(flat);
+      })
+      .catch(() => setTabs([]));
+  }, []);
+
+  // Load posts for selected category
   useEffect(() => {
     if (searchKeyword) return;
-    api.get<SectionData[]>(`/sections?category=${tab}`)
-      .then(setSections)
-      .catch(() => setSections([]));
-  }, [tab, searchKeyword]);
+    api.get<PostItem[]>(`/posts?category=${categoriesParam}`)
+      .then(setPosts)
+      .catch(() => setPosts([]));
+  }, [categoriesParam, searchKeyword]);
 
-  // Switch tab
   const switchTab = useCallback((key: string) => {
     setSearchInput('');
     setSearchKeyword('');
     setSearchResults([]);
-    router.push(`/?tab=${key}`, { scroll: false });
+    router.push(`/?categories=${key}`, { scroll: false });
   }, [router]);
 
-  // Search
   const handleSearch = () => {
     const q = searchInput.trim();
     if (!q) return;
     setSearchKeyword(q);
-    api.get<PostItem[]>(`/search?q=${encodeURIComponent(q)}`)
+    const params = new URLSearchParams({ q });
+    if (categoriesParam !== 'food') params.set('category', categoriesParam);
+    api.get<PostItem[]>(`/search?${params}`)
       .then(setSearchResults)
       .catch(() => setSearchResults([]));
   };
 
-  const handleClear = () => {
-    setSearchInput('');
-    setSearchKeyword('');
-    setSearchResults([]);
-  };
+  const handleClear = () => { setSearchInput(''); setSearchKeyword(''); setSearchResults([]); };
+  const handleKeyDown = (e: React.KeyboardEvent) => { if (e.key === 'Enter') handleSearch(); };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') handleSearch();
-  };
+  const getPostCategory = (p: PostItem): string => p.categories?.[0]?.category?.key || '';
+
+  const toGalleryItem = (p: PostItem) => ({
+    badge: p.badge, emoji: p.emoji, name: p.title, desc: p.description,
+    postId: p.id, category: getPostCategory(p),
+  });
 
   return (
     <div className="recommend-content">
-      {/* Search bar — top */}
       <div className="recommend-search">
         <div className="tab-search" style={{ maxWidth: 640, margin: '0 auto' }}>
-          <input
-            type="text"
-            className="tab-search-input"
-            placeholder="搜美食、饮品、目的地、玩法…"
-            maxLength={200}
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-          />
+          <input type="text" className="tab-search-input" placeholder="搜美食、饮品、目的地、玩法…" maxLength={200}
+            value={searchInput} onChange={(e) => setSearchInput(e.target.value)} onKeyDown={handleKeyDown} />
           <button className="tab-search-btn" onClick={handleSearch}>搜索</button>
           {searchKeyword && (
-            <button className="tab-search-btn" onClick={handleClear} style={{ background: 'var(--taupe)' }}>
-              清除
-            </button>
+            <button className="tab-search-btn" onClick={handleClear} style={{ background: 'var(--taupe)' }}>清除</button>
           )}
         </div>
       </div>
 
-      {/* Category tabs */}
       <div className="category-tabs">
-        {TABS.map(t => (
-          <button
-            key={t.key}
-            className={`category-tab ${tab === t.key ? 'active' : ''}`}
-            onClick={() => switchTab(t.key)}
-          >
-            <span className="category-tab-icon">{t.icon}</span>
-            {t.label}
+        {tabs.map(t => (
+          <button key={t.key} className={`category-tab ${categoriesParam === t.key ? 'active' : ''}`} onClick={() => switchTab(t.key)}>
+            <span className="category-tab-icon">{t.icon}</span>{t.label}
           </button>
         ))}
       </div>
 
-      {/* Content area */}
       <div className="recommend-body">
         {searchKeyword ? (
           searchResults.length > 0 ? (
-            <GallerySection
-              title={`🔍 搜索结果："${searchKeyword}"（${searchResults.length} 个）`}
-              items={searchResults.map(p => ({
-                badge: p.badge,
-                emoji: p.emoji,
-                name: p.title,
-                desc: p.description,
-                postId: p.id,
-                category: p.section?.category || '',
-              }))}
-            />
+            <GallerySection title={`🔍 搜索结果："${searchKeyword}"（${searchResults.length} 个）`} items={searchResults.map(toGalleryItem)} />
           ) : (
             <p style={{ textAlign: 'center', color: 'var(--taupe)', marginTop: 40, fontSize: 14 }}>
-              没有找到与 &quot;{searchKeyword}&quot; 相关的内容，换个关键词试试
+              没有找到与 &quot;{searchKeyword}&quot; 相关的内容
             </p>
           )
         ) : (
-          sections.map((section) => (
-            <GallerySection
-              key={section.id}
-              title={section.title}
-              items={section.posts.map((p) => ({
-                badge: p.badge,
-                emoji: p.emoji,
-                name: p.title,
-                desc: p.description,
-                postId: p.id,
-                category: section.category,
-              }))}
-            />
-          ))
+          <GallerySection title="推荐" items={posts.map(toGalleryItem)} />
         )}
-
-        {!searchKeyword && (
-          <footer className="footer">
-            &copy; 2026 胖喵 · 前端开发者
-          </footer>
-        )}
+        {!searchKeyword && <footer className="footer">&copy; 2026 胖喵 · 前端开发者</footer>}
       </div>
     </div>
   );

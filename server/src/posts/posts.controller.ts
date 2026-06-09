@@ -36,7 +36,7 @@ export class UploadController {
         cb(null, unique + extname(file.originalname));
       },
     }),
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+    limits: { fileSize: 5 * 1024 * 1024 },
     fileFilter: (_req, file, cb) => {
       if (!file.mimetype.startsWith('image/')) {
         cb(new BadRequestException('仅支持图片文件'), false);
@@ -50,27 +50,14 @@ export class UploadController {
   }
 }
 
-// ===== 公开接口（Web 前端使用）=====
-
-@Controller('sections')
-export class SectionsController {
-  constructor(private postsService: PostsService) {}
-
-  @Get()
-  async list(@Query('category') category?: string) {
-    return this.postsService.findAllSections(category);
-  }
-}
+// ===== 公开接口 =====
 
 @Controller('search')
 export class SearchController {
   constructor(private postsService: PostsService) {}
 
   @Get()
-  async search(
-    @Query('q') q?: string,
-    @Query('category') category?: string,
-  ) {
+  async search(@Query('q') q?: string, @Query('category') category?: string) {
     if (!q?.trim()) return [];
     return this.postsService.search(q, category);
   }
@@ -81,19 +68,9 @@ export class PostsController {
   constructor(private postsService: PostsService) {}
 
   @Get()
-  async list(
-    @Query('category') category?: string,
-    @Query('published') published?: string,
-    @Query('sectionId') sectionId?: string,
-  ) {
-    return this.postsService.findAllPosts({
-      category,
-      published: published === 'true' ? true : published === 'false' ? false : undefined,
-      sectionId: sectionId ? parseInt(sectionId) : undefined,
-    });
+  async list(@Query('category') category?: string) {
+    return this.postsService.findPublishedPosts(category);
   }
-
-  // ===== 评论（必须在 :id 之前注册，避免路由冲突）=====
 
   @Get(':id/comments')
   async comments(@Param('id', ParseIntPipe) id: number) {
@@ -114,8 +91,6 @@ export class PostsController {
     });
   }
 
-  // ===== 评分（必须在 :id 之前）=====
-
   @UseGuards(JwtAuthGuard)
   @Post(':id/rate')
   async rate(
@@ -134,8 +109,6 @@ export class PostsController {
   ) {
     return this.postsService.getUserRating(id, req.user.id);
   }
-
-  // ===== 详情（:id 必须放最后，否则会拦截上面的子路由）=====
 
   @Get(':id')
   async getOne(@Param('id', ParseIntPipe) id: number) {
@@ -157,31 +130,6 @@ export class CommentController {
 
 // ===== 管理员接口 =====
 
-@Controller('admin/sections')
-@UseGuards(AdminGuard)
-export class AdminSectionsController {
-  constructor(private postsService: PostsService) {}
-
-  @Post()
-  async create(@Body() body: { title: string; category: string; sortOrder?: number }) {
-    return this.postsService.createSection(body);
-  }
-
-  @Put(':id')
-  async update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() body: { title?: string; category?: string; sortOrder?: number },
-  ) {
-    return this.postsService.updateSection(id, body);
-  }
-
-  @Delete(':id')
-  async delete(@Param('id', ParseIntPipe) id: number) {
-    await this.postsService.deleteSection(id);
-    return { message: '栏目已删除' };
-  }
-}
-
 @Controller('admin/posts')
 @UseGuards(AdminGuard)
 export class AdminPostsController {
@@ -191,12 +139,10 @@ export class AdminPostsController {
   async list(
     @Query('category') category?: string,
     @Query('published') published?: string,
-    @Query('sectionId') sectionId?: string,
   ) {
     return this.postsService.findAllPosts({
       category,
       published: published === 'true' ? true : published === 'false' ? false : undefined,
-      sectionId: sectionId ? parseInt(sectionId) : undefined,
     });
   }
 
@@ -208,11 +154,11 @@ export class AdminPostsController {
       description: string;
       emoji: string;
       badge: string;
-      sectionId: number;
       published?: boolean;
       sortOrder?: number;
       content?: string;
       images?: string;
+      categoryIds?: number[];
     },
   ) {
     return this.postsService.createPost(body);
@@ -227,11 +173,11 @@ export class AdminPostsController {
       description?: string;
       emoji?: string;
       badge?: string;
-      sectionId?: number;
       published?: boolean;
       sortOrder?: number;
       content?: string;
       images?: string;
+      categoryIds?: number[];
     },
   ) {
     return this.postsService.updatePost(id, body);

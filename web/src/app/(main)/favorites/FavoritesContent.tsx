@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { GallerySection } from '@/components/GallerySection';
 import { api } from '@/lib/api';
+import type { CategoryGroupData } from '@/types';
 
 interface FavoriteItem {
   id: number;
@@ -14,24 +15,39 @@ interface FavoriteItem {
     description: string;
     emoji: string;
     badge: string;
-    section: { id: number; title: string; category: string };
+    categories: { category: { id: number; key: string; label: string; group: { key: string; label: string } } }[];
   };
 }
 
-const TABS = [
-  { key: '', icon: '📋', label: '全部' },
-  { key: 'food', icon: '🍽️', label: '美食' },
-  { key: 'travel', icon: '✈️', label: '旅游' },
-  { key: 'fun', icon: '🎮', label: '游玩' },
-];
+interface TabItem {
+  key: string;
+  icon: string;
+  label: string;
+}
 
 export function FavoritesContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const category = searchParams.get('category') || '';
 
+  const [tabs, setTabs] = useState<TabItem[]>([]);
   const [favorites, setFavorites] = useState<FavoriteItem[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Load categories for TABS
+  useEffect(() => {
+    api.get<CategoryGroupData[]>('/categories')
+      .then((groups) => {
+        const flat: TabItem[] = [{ key: '', icon: '📋', label: '全部' }];
+        for (const g of groups) {
+          for (const c of g.categories) {
+            flat.push({ key: c.key, icon: c.icon, label: c.label });
+          }
+        }
+        setTabs(flat);
+      })
+      .catch(() => setTabs([]));
+  }, []);
 
   const fetchFavorites = useCallback(() => {
     setLoading(true);
@@ -50,10 +66,14 @@ export function FavoritesContent() {
     router.push(key ? `/favorites?category=${key}` : '/favorites', { scroll: false });
   };
 
+  const getPostCategory = (f: FavoriteItem): string => {
+    return f.post.categories?.[0]?.category?.key || '';
+  };
+
   return (
     <div className="recommend-content">
       <div className="category-tabs">
-        {TABS.map(t => (
+        {tabs.map(t => (
           <button
             key={t.key}
             className={`category-tab ${category === t.key ? 'active' : ''}`}
@@ -77,7 +97,7 @@ export function FavoritesContent() {
               name: f.post.title,
               desc: f.post.description,
               postId: f.post.id,
-              category: f.post.section.category,
+              category: getPostCategory(f),
               isFavorited: true,
               favoriteId: f.id,
             }))}

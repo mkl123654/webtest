@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { LeftPanel } from '@/components/LeftPanel';
@@ -46,6 +46,32 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   const pathname = usePathname();
   useEffect(() => { setDrawerOpen(false); }, [pathname]);
 
+  // --- Hamburger auto-collapse ---
+  const [hamburgerRetracted, setHamburgerRetracted] = useState(false);
+  const hamburgerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const resetHamburgerTimer = useCallback(() => {
+    setHamburgerRetracted(false);
+    if (hamburgerTimerRef.current) clearTimeout(hamburgerTimerRef.current);
+    hamburgerTimerRef.current = setTimeout(() => setHamburgerRetracted(true), 4000);
+  }, []);
+
+  // Start timer on mount
+  useEffect(() => {
+    resetHamburgerTimer();
+    return () => { if (hamburgerTimerRef.current) clearTimeout(hamburgerTimerRef.current); };
+  }, [resetHamburgerTimer]);
+
+  // Don't retract when drawer is open
+  useEffect(() => {
+    if (drawerOpen) {
+      setHamburgerRetracted(false);
+      if (hamburgerTimerRef.current) clearTimeout(hamburgerTimerRef.current);
+    } else {
+      resetHamburgerTimer();
+    }
+  }, [drawerOpen, resetHamburgerTimer]);
+
   // Auth guard
   useEffect(() => {
     if (!loading && !user) {
@@ -77,8 +103,11 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     <div className="app">
       {/* Hamburger menu button — visible only on mobile */}
       <button
-        className="mobile-menu-btn"
+        className={`mobile-menu-btn${hamburgerRetracted ? ' retracted' : ''}`}
         onClick={() => setDrawerOpen(true)}
+        onMouseEnter={resetHamburgerTimer}
+        onMouseLeave={resetHamburgerTimer}
+        onTouchStart={resetHamburgerTimer}
         aria-label="打开菜单"
       >
         ☰

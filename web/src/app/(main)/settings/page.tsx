@@ -56,10 +56,10 @@ export default function SettingsPage() {
   };
 
   return (
-    <div style={{ padding: '36px 48px' }}>
+    <div className="settings-page">
       <h2 style={styles.pageTitle}>⚙️ 账号设置</h2>
 
-      <div style={styles.twoCol}>
+      <div className="settings-two-col">
         {/* Left column: Profile */}
         <div style={styles.column}>
           <h3 style={styles.sectionTitle}>个人资料</h3>
@@ -156,11 +156,6 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 28,
     color: '#2d1a0e',
     marginBottom: 24,
-  },
-  twoCol: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gap: 32,
   },
   column: {
     background: 'var(--surface)',

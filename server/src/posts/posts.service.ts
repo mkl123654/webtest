@@ -5,77 +5,46 @@ import { PrismaService } from '../prisma/prisma.service';
 export class PostsService {
   constructor(private prisma: PrismaService) {}
 
-  // ========== Sections ==========
-
-  async findAllSections(category?: string) {
-    return this.prisma.section.findMany({
-      where: category ? { category } : undefined,
+  async findPublishedPosts(category?: string) {
+    const where: any = { published: true };
+    if (category) {
+      where.categories = {
+        some: { category: { key: { in: category.split(',').map((s: string) => s.trim()) } } },
+      };
+    }
+    return this.prisma.post.findMany({
+      where,
       orderBy: { sortOrder: 'asc' },
-      include: {
-        posts: {
-          where: { published: true },
-          orderBy: { sortOrder: 'asc' },
-        },
-      },
+      include: { categories: { include: { category: { include: { group: true } } } } },
     });
   }
 
   async search(q: string, category?: string) {
     const kw = q?.trim();
     if (!kw) return [];
-    return this.prisma.post.findMany({
-      where: {
-        published: true,
-        ...(category ? { section: { category } } : {}),
-        OR: [
-          { title: { contains: kw } },
-          { description: { contains: kw } },
-        ],
-      },
-      orderBy: { sortOrder: 'asc' },
-      include: { section: true },
-    });
-  }
-
-  async createSection(data: { title: string; category: string; sortOrder?: number }) {
-    return this.prisma.section.create({ data });
-  }
-
-  async updateSection(id: number, data: { title?: string; category?: string; sortOrder?: number }) {
-    await this.findSectionOrFail(id);
-    return this.prisma.section.update({ where: { id }, data });
-  }
-
-  async deleteSection(id: number) {
-    await this.findSectionOrFail(id);
-    return this.prisma.section.delete({ where: { id } });
-  }
-
-  private async findSectionOrFail(id: number) {
-    const section = await this.prisma.section.findUnique({ where: { id } });
-    if (!section) throw new NotFoundException('栏目不存在');
-    return section;
-  }
-
-  // ========== Posts ==========
-
-  async findAllPosts(params: { category?: string; published?: boolean; sectionId?: number }) {
-    const where: any = {};
-    if (params.published !== undefined) where.published = params.published;
-    if (params.sectionId) where.sectionId = params.sectionId;
-    if (params.category) where.section = { category: params.category };
-
+    const where: any = {
+      published: true,
+      OR: [
+        { title: { contains: kw } },
+        { description: { contains: kw } },
+      ],
+    };
+    if (category) {
+      where.categories = {
+        some: { category: { key: { in: category.split(',').map((s: string) => s.trim()) } } },
+      };
+    }
     return this.prisma.post.findMany({
       where,
       orderBy: { sortOrder: 'asc' },
-      include: { section: true },
+      include: { categories: { include: { category: { include: { group: true } } } } },
     });
   }
 
   async findPostById(id: number) {
     const post = await this.prisma.post.findUnique({
       where: { id },
-      include: { section: true },
+      include: { categories: { include: { category: { include: { group: true } } } } },
     });
     if (!post) throw new NotFoundException('卡片不存在');
     return post;
@@ -85,7 +54,7 @@ export class PostsService {
     const post = await this.prisma.post.findUnique({
       where: { id },
       include: {
-        section: true,
+        categories: { include: { category: { include: { group: true } } } },
         comments: {
           orderBy: { createdAt: 'asc' },
           include: {
@@ -96,7 +65,6 @@ export class PostsService {
     });
     if (!post) throw new NotFoundException('卡片不存在');
 
-    // Build comment tree
     const commentMap = new Map<number, any>();
     const roots: any[] = [];
 
@@ -115,20 +83,43 @@ export class PostsService {
     return { ...postData, comments: roots };
   }
 
+  // ========== Admin ==========
+
+  async findAllPosts(params: { category?: string; published?: boolean }) {
+    const where: any = {};
+    if (params.published !== undefined) where.published = params.published;
+    if (params.category) {
+      where.categories = {
+        some: { category: { key: { in: params.category.split(',').map((s: string) => s.trim()) } } },
+      };
+    }
+    return this.prisma.post.findMany({
+      where,
+      orderBy: { sortOrder: 'asc' },
+      include: { categories: { include: { category: { include: { group: true } } } } },
+    });
+  }
+
   async createPost(data: {
     title: string;
     description: string;
     emoji: string;
     badge: string;
-    sectionId: number;
     published?: boolean;
     sortOrder?: number;
     content?: string;
     images?: string;
+    categoryIds?: number[];
   }) {
+    const { categoryIds, ...postData } = data;
     return this.prisma.post.create({
-      data,
-      include: { section: true },
+      data: {
+        ...postData,
+        ...(categoryIds?.length ? {
+          categories: { create: categoryIds.map(id => ({ categoryId: id })) },
+        } : {}),
+      },
+      include: { categories: { include: { category: true } } },
     });
   }
 
@@ -139,18 +130,27 @@ export class PostsService {
       description?: string;
       emoji?: string;
       badge?: string;
-      sectionId?: number;
       published?: boolean;
       sortOrder?: number;
       content?: string;
       images?: string;
+      categoryIds?: number[];
     },
   ) {
     await this.findPostById(id);
+    const { categoryIds, ...postData } = data;
+    if (categoryIds !== undefined) {
+      await this.prisma.postCategory.deleteMany({ where: { postId: id } });
+    }
     return this.prisma.post.update({
       where: { id },
-      data,
-      include: { section: true },
+      data: {
+        ...postData,
+        ...(categoryIds !== undefined ? {
+          categories: { create: categoryIds.map(cid => ({ categoryId: cid })) },
+        } : {}),
+      },
+      include: { categories: { include: { category: true } } },
     });
   }
 
@@ -164,7 +164,7 @@ export class PostsService {
     return this.prisma.post.update({
       where: { id },
       data: { published: !post.published },
-      include: { section: true },
+      include: { categories: { include: { category: { include: { group: true } } } } },
     });
   }
 
@@ -203,7 +203,6 @@ export class PostsService {
       update: { score },
     });
 
-    // Recalculate average
     const agg = await this.prisma.rating.aggregate({
       where: { postId },
       _avg: { score: true },

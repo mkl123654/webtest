@@ -16,7 +16,7 @@ interface PostDetail {
   images: string | null;
   ratingAvg: number;
   ratingCount: number;
-  section: { id: number; title: string; category: string };
+  categories: { category: { id: number; key: string; label: string; icon: string } }[];
   comments: CommentNode[];
 }
 
@@ -29,11 +29,9 @@ interface CommentNode {
   replies: CommentNode[];
 }
 
-const CAT_LABELS: Record<string, string> = { food: '美食推荐', travel: '旅游推荐', fun: '游玩推荐' };
-const CAT_EMOJIS: Record<string, string> = { food: '🍽️', travel: '✈️', fun: '🎮' };
 
 export default function PostDetailPage() {
-  const params = useParams<{ category: string; id: string }>();
+  const params = useParams<{ id: string }>();
   const router = useRouter();
   const { user } = useAuth();
   const [post, setPost] = useState<PostDetail | null>(null);
@@ -159,10 +157,11 @@ export default function PostDetailPage() {
           </div>
 
           <div style={styles.meta}>
-            <Link href={`/?tab=${post.section.category}`} style={styles.categoryLink}>
-              {CAT_EMOJIS[post.section.category]} {CAT_LABELS[post.section.category]}
-            </Link>
-            <span style={styles.sectionTag}>{post.section.title}</span>
+            {post.categories?.map(({ category: c }) => (
+              <Link key={c.id} href={`/?categories=${c.key}`} style={styles.categoryLink}>
+                {c.icon} {c.label}
+              </Link>
+            ))}
           </div>
         </div>
 

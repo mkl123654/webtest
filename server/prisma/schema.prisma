@@ -21,14 +21,32 @@ model User {
   favorites Favorite[]
 }
 
-model Section {
-  id        Int      @id @default(autoincrement())
-  title     String   @db.VarChar(50)
-  category  String   @db.VarChar(10) // food | travel | fun
-  sortOrder Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  posts     Post[]
+model CategoryGroup {
+  id        Int        @id @default(autoincrement())
+  key       String     @unique @db.VarChar(20)
+  label     String     @db.VarChar(20)
+  sortOrder Int        @default(0)
+  categories Category[]
+}
+
+model Category {
+  id        Int            @id @default(autoincrement())
+  key       String         @unique @db.VarChar(20)
+  label     String         @db.VarChar(20)
+  icon      String         @db.VarChar(10)
+  sortOrder Int            @default(0)
+  groupId   Int
+  group     CategoryGroup  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  posts     PostCategory[]
+}
+
+model PostCategory {
+  postId     Int
+  categoryId Int
+  post       Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([postId, categoryId])
 }
 
 model Post {
@@ -43,11 +61,10 @@ model Post {
   sortOrder   Int       @default(0)
   ratingAvg   Float     @default(0)
   ratingCount Int       @default(0)
-  sectionId   Int
-  section     Section   @relation(fields: [sectionId], references: [id], onDelete: Cascade)
   comments    Comment[]
   ratings     Rating[]
   favorites   Favorite[]
+  categories  PostCategory[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }

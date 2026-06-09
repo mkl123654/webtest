@@ -39,7 +39,7 @@ export function GalleryCard({ badge, emoji, name, desc, index, postId, category,
   }, [fav, postId]);
 
   return (
-    <Link href={`/${category}/${postId}`} className="gallery-card" style={{ textDecoration: 'none', position: 'relative' }}>
+    <Link href={`/post/${postId}`} className="gallery-card" style={{ textDecoration: 'none', position: 'relative' }}>
       <div className="img">
         <span className="badge">{badge}</span>
         <button

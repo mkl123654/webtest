@@ -4,8 +4,9 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { PostsModule } from './posts/posts.module';
 import { FavoritesModule } from './favorites/favorites.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
-  imports: [PrismaModule, AuthModule, UsersModule, PostsModule, FavoritesModule],
+  imports: [PrismaModule, AuthModule, UsersModule, PostsModule, FavoritesModule, CategoriesModule],
 })
 export class AppModule {}

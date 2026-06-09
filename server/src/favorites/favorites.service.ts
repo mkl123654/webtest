@@ -6,15 +6,21 @@ export class FavoritesService {
   constructor(private prisma: PrismaService) {}
 
   async list(userId: number, category?: string) {
+    const postWhere: any = {};
+    if (category) {
+      postWhere.categories = {
+        some: { category: { key: { in: category.split(',').map((s: string) => s.trim()) } } },
+      };
+    }
     return this.prisma.favorite.findMany({
       where: {
         userId,
-        ...(category ? { post: { section: { category } } } : {}),
+        ...(Object.keys(postWhere).length ? { post: postWhere } : {}),
       },
       orderBy: { createdAt: 'desc' },
       include: {
         post: {
-          include: { section: true },
+          include: { categories: { include: { category: { include: { group: true } } } } },
         },
       },
     });
@@ -31,7 +37,7 @@ export class FavoritesService {
 
     return this.prisma.favorite.create({
       data: { userId, postId },
-      include: { post: { include: { section: true } } },
+      include: { post: { include: { categories: { include: { category: true } } } } },
     });
   }
 

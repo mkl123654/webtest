@@ -31,6 +31,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             ...styles.navItem,
             ...(navActive('/dashboard/posts') ? styles.navItemActive : {}),
           }}>📝 内容管理</a>
+          <a href="/dashboard/categories" style={{
+            ...styles.navItem,
+            ...(navActive('/dashboard/categories') ? styles.navItemActive : {}),
+          }}>🏷️ 标签管理</a>
           <a href="/dashboard/users" style={{
             ...styles.navItem,
             ...(navActive('/dashboard/users') ? styles.navItemActive : {}),
