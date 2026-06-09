@@ -5,10 +5,20 @@
 # deps
 node_modules/
 
+# NestJS
+dist/
+
 # Next.js
 .next/
 out/
 
+# TypeScript
+*.tsbuildinfo
+
+# Superpowers
+.superpowers/
+
 # misc
 .DS_Store
 *.pem
+uploads/
